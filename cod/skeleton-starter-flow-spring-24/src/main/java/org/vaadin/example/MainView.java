@@ -1,5 +1,8 @@
 package org.vaadin.example;
 
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.dom.ThemeList;
+import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.flow.component.Key;
@@ -36,7 +39,7 @@ public class MainView extends VerticalLayout {
      *            bean.
      */
     public MainView(@Autowired GreetService service) {
-
+        
         // Use TextField for standard text input
         TextField textField = new TextField("Your name");
         textField.addClassName("bordered");
