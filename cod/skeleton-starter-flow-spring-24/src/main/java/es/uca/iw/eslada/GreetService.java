@@ -1,4 +1,4 @@
-package org.vaadin.example;
+package es.uca.iw.eslada;
 
 import java.io.Serializable;
 
