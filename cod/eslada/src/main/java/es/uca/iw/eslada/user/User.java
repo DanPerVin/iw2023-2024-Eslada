@@ -10,6 +10,14 @@ import java.util.UUID;
 
 @Entity
 public class User {
+
+    public enum UserRole {
+        USER,
+        MARKETING,
+        FINANCE,
+        ASSITANCE
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -29,6 +37,9 @@ public class User {
     @NotEmpty
     @Column(length = 100)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
     public String getDni() {
         return dni;
@@ -81,5 +92,5 @@ public class User {
         }
         return super.equals(other);
     }
-    
+
 }
