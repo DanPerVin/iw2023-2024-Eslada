@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    public List<User>  FindByName(String name);
-    public List<User> FindByNameOrDniAllIgnoreCase(String name, String dni);
+    public List<User>  findByName(String name);
+    public List<User> findByNameOrDniAllIgnoreCase(String name, String dni);
 
 }
