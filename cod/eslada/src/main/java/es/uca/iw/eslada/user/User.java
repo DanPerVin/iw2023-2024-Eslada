@@ -81,6 +81,14 @@ public class User {
         this.password = password;
     }
 
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof User other)) {
