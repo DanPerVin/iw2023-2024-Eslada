@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "appuser")
-public class User {
+public class User { //TODO: change fields properties (to fit form)
 
     public enum UserRole {
         USER,
@@ -40,7 +40,7 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserRole userRole = UserRole.USER; //user by default
 
     public String getDni() {
         return dni;
