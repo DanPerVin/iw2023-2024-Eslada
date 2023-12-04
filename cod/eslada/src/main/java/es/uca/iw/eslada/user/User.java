@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
 @Entity
+@Table(name = "appuser")
 public class User {
 
     public enum UserRole {
