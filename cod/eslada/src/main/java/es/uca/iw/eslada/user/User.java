@@ -16,7 +16,7 @@ public class User { //TODO: change fields properties (to fit form)
         USER,
         MARKETING,
         FINANCE,
-        ASSITANCE
+        ASISTANCE
     }
 
     @Id
