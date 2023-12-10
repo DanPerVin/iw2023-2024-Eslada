@@ -6,6 +6,7 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 import es.uca.iw.eslada.user.User;
 import es.uca.iw.eslada.user.UserService;
 import jdk.jfr.Name;
@@ -18,6 +19,7 @@ import java.awt.*;
 
 @Route("register")
 @PageTitle("ESLADA-REGISTER")
+@AnonymousAllowed
 public class RegisterView extends VerticalLayout {
     private final UserService userService;
     private final TextField name = new TextField();
