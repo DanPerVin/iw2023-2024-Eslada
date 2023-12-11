@@ -1,5 +1,6 @@
 package es.uca.iw.eslada.login;
 
+import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -11,10 +12,11 @@ import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import es.uca.iw.eslada.user.AuthenticatedUser;
 @AnonymousAllowed
-@PageTitle("Login")
+@PageTitle("Login pruebitas")
 @Route(value = "login")
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
     private final AuthenticatedUser authenticatedUser;
+    private final LoginForm login = new LoginForm();
 
     public LoginView(AuthenticatedUser authenticatedUser){
         this.authenticatedUser = authenticatedUser;
@@ -22,9 +24,9 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
-        i18n.getHeader().setTitle("Eslada - Login");
+        i18n.getHeader().setTitle("Eslada");
         i18n.getHeader().setDescription("Login usando User o admin");
-        i18n.setAdditionalInformation(null);
+        //i18n.setAdditionalInformation(null);
         setForgotPasswordButtonVisible(false);
         setOpened(true);
     }
@@ -32,7 +34,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
     public void beforeEnter(BeforeEnterEvent event) {
         if(authenticatedUser.get().isPresent()){
             setOpened(false);
-            event.forwardTo("");
+            event.forwardTo("/prueba");
         }
         setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
     }
