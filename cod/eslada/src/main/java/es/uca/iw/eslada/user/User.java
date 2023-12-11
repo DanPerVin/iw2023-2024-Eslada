@@ -24,6 +24,9 @@ public class User { //TODO: change fields properties (to fit form)
     private UUID id;
 
     @Column(length = 100)
+    private String username;
+
+    @Column(length = 100)
     private String name;
 
     @Column(length = 9)
@@ -60,6 +63,14 @@ public class User { //TODO: change fields properties (to fit form)
 
     public UUID getId() {
         return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setDni(String dni) {
