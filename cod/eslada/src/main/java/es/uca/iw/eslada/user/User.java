@@ -25,6 +25,7 @@ public class User { //TODO: change fields properties (to fit form)
     private UUID id;
 
     @Column(length = 100)
+    @NotEmpty
     private String username;
 
     @Column(length = 100)
