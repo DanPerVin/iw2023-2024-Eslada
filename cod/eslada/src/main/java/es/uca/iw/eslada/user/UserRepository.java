@@ -10,4 +10,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     public List<User>  findByName(String name);
     public List<User> findByNameOrDniAllIgnoreCase(String name, String dni);
 
+    User findByUsername(String username);
 }

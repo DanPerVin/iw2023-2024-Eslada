@@ -6,22 +6,27 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.util.Collection;
 import java.util.UUID;
 
 @Entity
 @Table(name = "appuser")
 public class User { //TODO: change fields properties (to fit form)
 
-    public enum UserRole {
-        USER,
-        MARKETING,
-        FINANCE,
-        ASISTANCE
-    }
+//    public enum UserRole {
+//        USER,
+//        MARKETING,
+//        FINANCE,
+//        ASISTANCE
+//    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
+    @Column(length = 100)
+    @NotEmpty
+    private String username;
 
     @Column(length = 100)
     private String name;
@@ -39,8 +44,16 @@ public class User { //TODO: change fields properties (to fit form)
     @Column(length = 100)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole userRole = UserRole.USER; //user by default
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Collection<Rol> roles;
+
+//    @Enumerated(EnumType.STRING)
+//    private UserRole userRole = UserRole.USER; //user by default
 
     public String getDni() {
         return dni;
@@ -60,6 +73,14 @@ public class User { //TODO: change fields properties (to fit form)
 
     public UUID getId() {
         return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setDni(String dni) {
@@ -82,12 +103,12 @@ public class User { //TODO: change fields properties (to fit form)
         this.password = password;
     }
 
-    public UserRole getUserRole() {
-        return userRole;
+    public Collection<Rol> getRoles() {
+        return roles;
     }
 
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
+    public void setRoles(Collection<Rol> roles) {
+        this.roles = roles;
     }
 
     @Override
