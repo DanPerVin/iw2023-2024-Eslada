@@ -10,6 +10,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.internal.RouteUtil;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import es.uca.iw.eslada.pruebas.PruebaView;
 import es.uca.iw.eslada.user.AuthenticatedUser;
 @AnonymousAllowed
 @PageTitle("Login pruebitas")
@@ -26,6 +27,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         i18n.setHeader(new LoginI18n.Header());
         i18n.getHeader().setTitle("Eslada");
         i18n.getHeader().setDescription("Login usando User o admin");
+        setI18n(i18n);
         //i18n.setAdditionalInformation(null);
         setForgotPasswordButtonVisible(false);
         setOpened(true);
@@ -34,7 +36,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
     public void beforeEnter(BeforeEnterEvent event) {
         if(authenticatedUser.get().isPresent()){
             setOpened(false);
-            event.forwardTo("/prueba");
+            event.forwardTo(PruebaView.class);
         }
         setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
     }
