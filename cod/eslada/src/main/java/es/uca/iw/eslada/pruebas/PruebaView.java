@@ -5,7 +5,6 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import es.uca.iw.eslada.user.AuthenticatedUser;
 import es.uca.iw.eslada.user.User;
@@ -13,7 +12,7 @@ import jakarta.annotation.security.RolesAllowed;
 
 import java.util.Optional;
 
-@RolesAllowed("ROLE_USER")
+@RolesAllowed({"ROLE_USER","ROLE_ADMIN"})
 @PageTitle("Prueba")
 @Route("prueba")
 public class PruebaView extends VerticalLayout { //TODO: SOLO ACCESO UNA VEZ LOGEADO

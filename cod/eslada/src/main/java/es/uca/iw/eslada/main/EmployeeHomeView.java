@@ -5,7 +5,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 
-@Route(value = "admin_view")
+@Route(value = "admin_view", layout = MainLayout.class)
 @RolesAllowed("ROLE_ADMIN")
 public class EmployeeHomeView extends VerticalLayout {
 

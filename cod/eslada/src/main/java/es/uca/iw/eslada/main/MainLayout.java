@@ -2,6 +2,8 @@ package es.uca.iw.eslada.main;
 
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
@@ -11,6 +13,7 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
+import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 
@@ -18,19 +21,20 @@ public class MainLayout extends AppLayout {
 
     private H2 viewTitle;
     private AccessAnnotationChecker accessChecker;
+    private final transient AuthenticationContext authContext;
 
-    public MainLayout(AccessAnnotationChecker accessChecker) {
-        DrawerToggle toggle = new DrawerToggle();
+    public MainLayout(AccessAnnotationChecker accessChecker, AuthenticationContext authContext) {
         this.accessChecker = accessChecker;
+        this.authContext = authContext;
 
-        H1 title = new H1("MyApp");
+        H1 title = new H1("Menú");
         title.getStyle().set("font-size", "var(--lumo-font-size-l)")
                 .set("margin", "0");
 
         Tabs tabs = getTabs();
 
         addToDrawer(tabs);
-        addToNavbar(toggle, title);
+        addToNavbar(title);
         addHeaderContent();
     }
 
@@ -41,15 +45,18 @@ public class MainLayout extends AppLayout {
         viewTitle = new H2();
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
 
-        addToNavbar(true, toggle, viewTitle);
+        Button logoutButton = new Button("Logout", new Icon(VaadinIcon.SIGN_OUT_ALT), click -> authContext.logout());
+        logoutButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+
+        addToNavbar(true, toggle, viewTitle, logoutButton);
     }
 
     private Tabs getTabs() {
         Tabs tabs = new Tabs();
 
         if (accessChecker.hasAccess(UserHomeView.class)) {
-            tabs.add(createTab(VaadinIcon.DASHBOARD, "UserHomeView")//,
-                    //createTab(VaadinIcon.CASH, "Tarifas"),
+            tabs.add(createTab(VaadinIcon.DASHBOARD, "UserHomeView"),
+                    createTab(VaadinIcon.CASH, "Tarifas")
                     //createTab(VaadinIcon.CHART_GRID, "Facturas")
             );
         }
