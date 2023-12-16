@@ -47,6 +47,8 @@ public class MainLayout extends AppLayout {
 
         Button logoutButton = new Button("Logout", new Icon(VaadinIcon.SIGN_OUT_ALT), click -> authContext.logout());
         logoutButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+        logoutButton.getElement().getStyle().set("margin-left", "auto");
+        logoutButton.getElement().getStyle().set("margin-right", "10px");
 
         addToNavbar(true, toggle, viewTitle, logoutButton);
     }
@@ -55,7 +57,7 @@ public class MainLayout extends AppLayout {
         Tabs tabs = new Tabs();
 
         if (accessChecker.hasAccess(UserHomeView.class)) {
-            tabs.add(createTab(VaadinIcon.DASHBOARD, "UserHomeView"),
+            tabs.add(createTab(VaadinIcon.DASHBOARD, "Home"),
                     createTab(VaadinIcon.CASH, "Tarifas")
                     //createTab(VaadinIcon.CHART_GRID, "Facturas")
             );
