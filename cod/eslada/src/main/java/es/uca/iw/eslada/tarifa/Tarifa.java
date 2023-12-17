@@ -35,14 +35,14 @@ public class Tarifa {
         return descripcion;
     }
 
-    public String getTitulo() {
-        return titulo;
-    }
+    public String getTitulo() { return titulo; }
 
     public UUID getId() {
         return id;
     }
-    public String getTarifaUrl(){return tarifaUrl; }
+    public String getTarifaUrl() {
+        System.out.print(tarifaUrl);
+        return tarifaUrl; }
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;

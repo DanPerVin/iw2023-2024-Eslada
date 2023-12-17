@@ -17,5 +17,6 @@ public class TarifaService {
         return tarifaRepository.findAll();
     }
 
-    //TODO: Editar Tarifa
+
+    //public Tarifa findById() {}
 }
