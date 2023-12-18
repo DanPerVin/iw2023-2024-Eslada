@@ -1,9 +1,10 @@
 package es.uca.iw.eslada.tarifa;
 
-import es.uca.iw.eslada.user.User;
+import es.uca.iw.eslada.servicio.Servicio;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
+import java.util.Collection;
 import java.util.UUID;
 
 @Entity
@@ -25,7 +26,15 @@ public class Tarifa {
     private double precio;
 
     @Column(length = 100)
-    private String tarifaUrl;
+    private String Url;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "tarifa_servicio",
+            joinColumns = @JoinColumn(name = "tarifa_id"),
+            inverseJoinColumns = @JoinColumn(name = "servicio_id")
+    )
+    private Collection<Servicio> servicios;
 
     public double getPrecio() {
         return precio;
@@ -37,12 +46,11 @@ public class Tarifa {
 
     public String getTitulo() { return titulo; }
 
-    public UUID getId() {
-        return id;
+    public UUID getId() { return id; }
+    public String getUrl() { return Url; }
+    public Collection<Servicio> getServicios() {
+        return servicios;
     }
-    public String getTarifaUrl() {
-        System.out.print(tarifaUrl);
-        return tarifaUrl; }
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
@@ -60,11 +68,15 @@ public class Tarifa {
         this.titulo = titulo;
     }
 
-    public void setTarifaUrl(String tarifaUrl) { this.tarifaUrl = tarifaUrl; }
+    public void setUrl(String Url) { this.Url = Url; }
+
+    public void setServicios(Collection<Servicio> servicios) {
+        this.servicios = servicios;
+    }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof User other)) {
+        if (!(obj instanceof Tarifa other)) {
             return false;
         }
 
