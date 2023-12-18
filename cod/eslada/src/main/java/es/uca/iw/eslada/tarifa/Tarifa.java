@@ -8,7 +8,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tarifa")
-
 public class Tarifa {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,7 +40,6 @@ public class Tarifa {
         return id;
     }
     public String getTarifaUrl() {
-        System.out.print(tarifaUrl);
         return tarifaUrl; }
 
     public void setDescripcion(String descripcion) {
