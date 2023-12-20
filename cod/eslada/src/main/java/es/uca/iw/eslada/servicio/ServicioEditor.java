@@ -21,6 +21,7 @@ public class ServicioEditor extends VerticalLayout implements KeyNotifier {
     private Button cancelButton;
     private BeanValidationBinder<Servicio> binder;
     private Servicio servicio;
+    private Runnable callback;
 
     public ServicioEditor(ServicioRepository servicioRepository){
         this.servicioRepository =servicioRepository;
@@ -48,6 +49,10 @@ public class ServicioEditor extends VerticalLayout implements KeyNotifier {
         binder.setBean(servicio);
     }
 
+    public void setCallback(Runnable callback) {
+        this.callback = callback;
+    }
+
     private void save(){
         if(binder.validate().isOk()){
             servicioRepository.save(servicio);
@@ -57,7 +62,9 @@ public class ServicioEditor extends VerticalLayout implements KeyNotifier {
                     ((Dialog)parent).close();
                 }
             });
+            if (callback != null) {
+                callback.run();
+            }
         }
-
     }
 }

@@ -62,6 +62,7 @@ public class ServicioView extends VerticalLayout {
             layout.add(deleteButton);
         })).setHeader("Acciones");
 
+        //TODO: AÑADIR BARRA DE BUSQUEDA
         grid.setItems(servicioService.findAll());
 
         add(grid);
@@ -69,6 +70,9 @@ public class ServicioView extends VerticalLayout {
 
     private void editServicio(Servicio servicio) {
         servicioEditor.editServicio(servicio);
+        servicioEditor.setCallback(() -> {
+            grid.setItems(servicioService.findAll());
+        });
 
         Dialog dialog = new Dialog();
         H2 headline = new H2("Edit Servicio");
@@ -88,7 +92,9 @@ public class ServicioView extends VerticalLayout {
     }
 
     private void addServicio() {
-
+        servicioAdder.setCallback(() -> {
+            grid.setItems(servicioService.findAll());
+        });
         Dialog dialog = new Dialog();
         H2 headline = new H2("Add Servicio");
         dialog.add(headline);
