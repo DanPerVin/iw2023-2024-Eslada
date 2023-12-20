@@ -120,8 +120,8 @@ public class ServicioView extends VerticalLayout {
             dialog.close();
         });
         deleteButton.setThemeName("primary");
-
-        dialog.add(cancelButton, deleteButton);
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, deleteButton);
+        dialog.add(buttonLayout);
 
         dialog.setDraggable(true);
         dialog.setResizable(true);
