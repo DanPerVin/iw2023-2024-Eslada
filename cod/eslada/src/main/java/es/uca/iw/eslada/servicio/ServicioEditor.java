@@ -2,6 +2,7 @@ package es.uca.iw.eslada.servicio;
 
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -29,7 +30,8 @@ public class ServicioEditor extends VerticalLayout implements KeyNotifier {
         this.cancelButton = new Button("Cancelar", e -> cancel());
         this.binder = new BeanValidationBinder<>(Servicio.class);
         binder.bindInstanceFields(this);
-        add(name,saveButton);
+        HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, cancelButton);
+        add(name, buttonLayout);
     }
 
     private void cancel() {
@@ -47,7 +49,15 @@ public class ServicioEditor extends VerticalLayout implements KeyNotifier {
     }
 
     private void save(){
-        servicioRepository.save(servicio);
-        binder.setBean(null);
+        if(binder.validate().isOk()){
+            servicioRepository.save(servicio);
+            binder.setBean(null);
+            getParent().ifPresent(parent -> {
+                if(parent instanceof Dialog){
+                    ((Dialog)parent).close();
+                }
+            });
+        }
+
     }
 }

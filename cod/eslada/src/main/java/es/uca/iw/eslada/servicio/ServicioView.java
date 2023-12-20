@@ -70,7 +70,7 @@ public class ServicioView extends VerticalLayout {
         servicioEditor.editServicio(servicio);
 
         Dialog dialog = new Dialog();
-        H2 headline = new H2("Add Servicio");
+        H2 headline = new H2("Edit Servicio");
         dialog.add(headline);
         headline.getElement().getClassList().add("draggable");
 
