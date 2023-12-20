@@ -1,6 +1,7 @@
 package es.uca.iw.eslada.servicio;
 
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.charts.model.Label;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -119,7 +120,8 @@ public class ServicioView extends VerticalLayout {
             grid.setItems(servicioService.findAll());
             dialog.close();
         });
-        deleteButton.setThemeName("primary");
+
+        deleteButton.setThemeName("error");
         HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, deleteButton);
         dialog.add(buttonLayout);
 
