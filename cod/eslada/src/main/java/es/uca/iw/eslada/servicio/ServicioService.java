@@ -13,4 +13,8 @@ public class ServicioService {
     public List<Servicio> findAll() {
         return servicioRepository.findAll();
     }
+
+    public void delete(Servicio servicio) {
+        servicioRepository.deleteById(servicio.getId());
+    }
 }
