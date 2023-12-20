@@ -1,5 +1,6 @@
 package es.uca.iw.eslada.servicio;
 
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,6 +20,7 @@ public class ServicioView extends VerticalLayout {
 
     private final Grid<Servicio> grid = new Grid<>(Servicio.class,false);
 
+
     public ServicioView(ServicioService servicioService, ServicioEditor servicioEditor){
         this.servicioService = servicioService;
         this.servicioEditor = servicioEditor;
@@ -36,6 +38,13 @@ public class ServicioView extends VerticalLayout {
 
     private void editServicio(Servicio servicio) {
         servicioEditor.editServicio(servicio);
-        add(servicioEditor);
+
+        Dialog dialog = new Dialog();
+        dialog.add(servicioEditor);
+        dialog.open();
+        dialog.addDialogCloseActionListener(e-> {
+            grid.setItems(servicioService.findAll());
+            dialog.close();
+        });
     }
 }
