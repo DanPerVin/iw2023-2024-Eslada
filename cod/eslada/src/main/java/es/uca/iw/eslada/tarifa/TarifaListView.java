@@ -47,7 +47,7 @@ public class TarifaListView extends VerticalLayout {
     private static Renderer<Tarifa> createToggleDetailsRenderer(
             Grid<Tarifa> grid) {
         return LitRenderer.<Tarifa> of(
-                        "<vaadin-button theme=\"tertiary\" @click=\"${handleClick}\">Toggle details</vaadin-button>")
+                        "<vaadin-button theme=\"tertiary\" @click=\"${handleClick}\">Detalles</vaadin-button>")
                 .withFunction("handleClick",
                         tarifa -> grid.setDetailsVisible(tarifa,
                                 !grid.isDetailsVisible(tarifa)));
@@ -56,8 +56,8 @@ public class TarifaListView extends VerticalLayout {
 
     private static Renderer<Tarifa> createTarifaRenderer() {
         return LitRenderer.<Tarifa>of(
-                        "<vaadin-avatar img=\"${item.tarifaUrl}\" name=\"${item.fullName}\" alt=\"User avatar\"></vaadin-avatar>")
-                .withProperty("tarifaUrl", Tarifa::getTarifaUrl);
+                        "<vaadin-avatar img=\"${item.Url}\" name=\"${item.fullName}\" alt=\"User avatar\"></vaadin-avatar>")
+                .withProperty("Url", Tarifa::getUrl);
 
     }
 

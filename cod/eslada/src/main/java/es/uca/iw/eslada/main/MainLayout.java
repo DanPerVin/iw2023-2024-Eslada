@@ -73,5 +73,5 @@ public class MainLayout extends AppLayout {
         }
 
         return nav;
-    }
+    }//TODO: Revisar permisos de tarifas
 }
