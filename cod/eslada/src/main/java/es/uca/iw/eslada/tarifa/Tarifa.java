@@ -9,7 +9,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tarifa")
-
 public class Tarifa {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
