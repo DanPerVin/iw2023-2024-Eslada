@@ -14,6 +14,7 @@ import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import es.uca.iw.eslada.servicio.ServicioView;
+import es.uca.iw.eslada.tarifa.TarifaEditView;
 import es.uca.iw.eslada.tarifa.TarifaListView;
 
 
@@ -66,6 +67,10 @@ public class MainLayout extends AppLayout {
 
         if (accessChecker.hasAccess(TarifaListView.class)) {
             nav.addItem(new SideNavItem("Tarifa List", TarifaListView.class, VaadinIcon.CASH.create()));
+        }
+
+        if (accessChecker.hasAccess(TarifaEditView.class)) {
+            nav.addItem(new SideNavItem("Tarifa Edit List", TarifaEditView.class, VaadinIcon.CASH.create()));
         }
 
         if(accessChecker.hasAccess(ServicioView.class)){

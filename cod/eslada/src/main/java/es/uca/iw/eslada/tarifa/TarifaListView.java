@@ -14,7 +14,7 @@ import jakarta.annotation.security.PermitAll;
 
 import java.util.stream.Stream;
 
-@Route(value = "tarifas", layout = MainLayout.class)
+@Route(value = "tarifa_lista", layout = MainLayout.class)
 @PermitAll
 public class TarifaListView extends VerticalLayout {
     private final TarifaService tarifaService;

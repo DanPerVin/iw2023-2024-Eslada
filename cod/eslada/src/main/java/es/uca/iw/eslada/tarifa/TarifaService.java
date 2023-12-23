@@ -18,5 +18,7 @@ public class TarifaService {
     }
 
 
-    //public Tarifa findById() {}
+    public void delete(Tarifa tarifa) {
+        tarifaRepository.deleteById(tarifa.getId());
+    }
 }
