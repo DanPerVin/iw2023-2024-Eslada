@@ -1,5 +1,6 @@
 package es.uca.iw.eslada.user;
 
+import es.uca.iw.eslada.contrato.Contrato;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -52,6 +53,14 @@ public class User { //TODO: change fields properties (to fit form)
     )
     private Collection<Rol> roles;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_contrato",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "contrato_id")
+    )
+    private Collection<Contrato> contratos;
+
 //    @Enumerated(EnumType.STRING)
 //    private UserRole userRole = UserRole.USER; //user by default
 
@@ -77,6 +86,10 @@ public class User { //TODO: change fields properties (to fit form)
 
     public String getUsername() {
         return username;
+    }
+
+    public Collection<Contrato> getContratos() {
+        return contratos;
     }
 
     public void setUsername(String username) {
@@ -107,8 +120,8 @@ public class User { //TODO: change fields properties (to fit form)
         return roles;
     }
 
-    public void setRoles(Collection<Rol> roles) {
-        this.roles = roles;
+    public void setContratos(Collection<Contrato> contratos) {
+        this.contratos = contratos;
     }
 
     @Override

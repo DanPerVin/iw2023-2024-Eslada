@@ -14,8 +14,8 @@ import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import es.uca.iw.eslada.servicio.ServicioView;
-import es.uca.iw.eslada.tarifa.TarifaEditView;
-import es.uca.iw.eslada.tarifa.TarifaListView;
+import es.uca.iw.eslada.contrato.ContratoEditView;
+import es.uca.iw.eslada.contrato.ContratoListView;
 
 
 public class MainLayout extends AppLayout {
@@ -65,12 +65,12 @@ public class MainLayout extends AppLayout {
             nav.addItem(new SideNavItem("Home", EmployeeHomeView.class, VaadinIcon.HOME.create()));
         }
 
-        if (accessChecker.hasAccess(TarifaListView.class)) {
-            nav.addItem(new SideNavItem("Tarifa List", TarifaListView.class, VaadinIcon.CASH.create()));
+        if (accessChecker.hasAccess(ContratoListView.class)) {
+            nav.addItem(new SideNavItem("Contrato List", ContratoListView.class, VaadinIcon.CASH.create()));
         }
 
-        if (accessChecker.hasAccess(TarifaEditView.class)) {
-            nav.addItem(new SideNavItem("Tarifa Edit List", TarifaEditView.class, VaadinIcon.CASH.create()));
+        if (accessChecker.hasAccess(ContratoEditView.class)) {
+            nav.addItem(new SideNavItem("Contrato Edit List", ContratoEditView.class, VaadinIcon.CASH.create()));
         }
 
         if(accessChecker.hasAccess(ServicioView.class)){

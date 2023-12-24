@@ -1,4 +1,4 @@
-package es.uca.iw.eslada.tarifa;
+package es.uca.iw.eslada.contrato;
 
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
@@ -12,29 +12,35 @@ import com.vaadin.flow.spring.annotation.UIScope;
 
 @SpringComponent
 @UIScope
-public class TarifaEditor extends VerticalLayout implements KeyNotifier {
-    private final TarifaRepository tarifaRepository;
-    private TextField titulo;
-    private TextField descripcion;
-    private TextField url;
+public class ContratoEditor extends VerticalLayout implements KeyNotifier {
+    private final ContratoRepository contratoRepository;
+    private TextField nombre;
+    private TextField apellidos;
+    private TextField email;
+    private TextField dni;
+    private TextField direccion;
+    private TextField iban;
     private Button saveButton;
     private Button cancelButton;
-    private BeanValidationBinder<Tarifa> binder;
-    private Tarifa tarifa;
+    private BeanValidationBinder<Contrato> binder;
+    private Contrato contrato;
     private Runnable callback;
 
-    public TarifaEditor(TarifaRepository tarifaRepository){
-        this.tarifaRepository = tarifaRepository;
+    public ContratoEditor(ContratoRepository contratoRepository){
+        this.contratoRepository = contratoRepository;
 
-        this.titulo = new TextField("nombre");
-        this.descripcion = new TextField("descripcion");
-        this.url = new TextField("url");
+        this.nombre = new TextField("Nombre");
+        this.apellidos = new TextField("Apellidos");
+        this.dni = new TextField("dni");
+        this.email = new TextField("Email");
+        this.direccion = new TextField("Direccion");
+        this.iban = new TextField("Cuenta Bancaria");
         this.saveButton = new Button("Guardar",e->save());
         this.cancelButton = new Button("Cancelar", e -> cancel());
-        this.binder = new BeanValidationBinder<>(Tarifa.class);
+        this.binder = new BeanValidationBinder<>(Contrato.class);
         binder.bindInstanceFields(this);
         HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, cancelButton);
-        add(titulo, descripcion, url, buttonLayout);
+        add(nombre,apellidos, dni, email, direccion, iban, buttonLayout);
     }
 
     private void cancel() {
@@ -46,9 +52,9 @@ public class TarifaEditor extends VerticalLayout implements KeyNotifier {
         });
     }
 
-    public void editTarifa(Tarifa tarifa){
-        this.tarifa = tarifa;
-        binder.setBean(tarifa);
+    public void editContrato(Contrato contrato){
+        this.contrato = contrato;
+        binder.setBean(contrato);
     }
 
     public void setCallback(Runnable callback) {
@@ -57,7 +63,7 @@ public class TarifaEditor extends VerticalLayout implements KeyNotifier {
 
     private void save(){
         if(binder.validate().isOk()){
-            tarifaRepository.save(tarifa);
+            contratoRepository.save(contrato);
             binder.setBean(null);
             getParent().ifPresent(parent -> {
                 if(parent instanceof Dialog){

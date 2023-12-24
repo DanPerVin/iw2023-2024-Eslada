@@ -1,4 +1,4 @@
-package es.uca.iw.eslada.tarifa;
+package es.uca.iw.eslada.contrato;
 
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
@@ -12,26 +12,26 @@ import com.vaadin.flow.spring.annotation.UIScope;
 
 @SpringComponent
 @UIScope
-public class TarifaAdder extends VerticalLayout implements KeyNotifier {
-    private final TarifaRepository tarifaRepository;
+public class ContratoAdder extends VerticalLayout implements KeyNotifier {
+    private final ContratoRepository contratoRepository;
 
-    private TextField titulo;
+    private TextField nombre;
     private Button addButton;
     private Button cancelButton;
-    private BeanValidationBinder<Tarifa> binder;
+    private BeanValidationBinder<Contrato> binder;
 
     private Runnable callback;
 
-    public TarifaAdder(TarifaRepository tarifaRepository){
-        this.tarifaRepository = tarifaRepository;
+    public ContratoAdder(ContratoRepository contratoRepository){
+        this.contratoRepository = contratoRepository;
 
-        this.titulo = new TextField("nombre");
+        this.nombre = new TextField("Nombre");
         this.addButton = new Button("Add", e -> add());
         this.cancelButton = new Button("Cancelar", e -> cancel());
-        this.binder = new BeanValidationBinder<>(Tarifa.class);
+        this.binder = new BeanValidationBinder<>(Contrato.class);
         binder.bindInstanceFields(this);
         HorizontalLayout buttonLayout = new HorizontalLayout(addButton, cancelButton);
-        add(titulo, buttonLayout);
+        add(nombre, buttonLayout);
     }
 
     private void cancel() {
@@ -46,10 +46,10 @@ public class TarifaAdder extends VerticalLayout implements KeyNotifier {
         this.callback = callback;
     }
     private void add(){
-        Tarifa tarifa = new Tarifa();
-        binder.writeBeanIfValid(tarifa);
-        if (tarifa.getTitulo() != null) {
-            tarifaRepository.save(tarifa);
+        Contrato contrato = new Contrato();
+        binder.writeBeanIfValid(contrato);
+        if (contrato.getNombre() != null) {
+            contratoRepository.save(contrato);
             binder.setBean(null);
             getParent().ifPresent(parent -> {
                 if(parent instanceof Dialog){
