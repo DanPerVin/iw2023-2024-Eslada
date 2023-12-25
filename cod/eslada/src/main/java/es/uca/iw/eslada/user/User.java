@@ -120,6 +120,10 @@ public class User { //TODO: change fields properties (to fit form)
         return roles;
     }
 
+    public void setRoles(Collection<Rol> roles) {
+        this.roles = roles;
+    }
+
     public void setContratos(Collection<Contrato> contratos) {
         this.contratos = contratos;
     }

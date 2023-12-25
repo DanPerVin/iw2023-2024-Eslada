@@ -17,7 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @PWA(name = "Project Base for Vaadin with Spring", shortName = "Project Base")
-@Theme(variant = Lumo.DARK)
+@Theme(value = "my-theme", variant = Lumo.DARK)
 public class Application implements AppShellConfigurator {
 
     public static void main(String[] args) {
