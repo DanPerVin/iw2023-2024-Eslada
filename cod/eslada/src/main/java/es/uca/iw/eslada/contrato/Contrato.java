@@ -98,6 +98,7 @@ public class Contrato {
     public void setEmail(String email) { this.email = email; }
 
     public void setDni(String dni) { this.dni = dni; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
 
     public void setIban(String iban) { this.iban = iban; }
 

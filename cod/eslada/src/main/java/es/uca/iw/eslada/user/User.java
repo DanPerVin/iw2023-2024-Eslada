@@ -32,6 +32,9 @@ public class User { //TODO: change fields properties (to fit form)
     @Column(length = 100)
     private String name;
 
+    @Column(length = 100)
+    private String surname;
+
     @Column(length = 9)
     @Size(min = 9,max = 9)
     @Pattern(regexp = "^[0-9]{8}[A-Za-z]$")
@@ -76,6 +79,10 @@ public class User { //TODO: change fields properties (to fit form)
         return name;
     }
 
+    public String getSurname() {
+        return surname;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -111,6 +118,11 @@ public class User { //TODO: change fields properties (to fit form)
     public void setName(String name) {
         this.name = name;
     }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
 
     public void setPassword(String password) {
         this.password = password;
