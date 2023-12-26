@@ -1,12 +1,15 @@
 package es.uca.iw.eslada.servicio;
 
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.charts.model.Label;
+import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -49,6 +52,12 @@ public class ServicioView extends VerticalLayout {
         //add(new H1("Servicios"));
 
         grid.addColumn(Servicio::getName).setHeader("Nombre");
+        grid.addColumn(Servicio::getPrice).setHeader("Precio");
+        grid.addColumn(new ComponentRenderer<>(servicio -> {
+            AccordionPanel accordion = new AccordionPanel();
+            accordion.setContent(new Text(servicio.getDescription()));
+            return accordion;
+        })).setHeader("Descripción");
         //grid.addColumn(new ComponentRenderer<>(Button::new, (button,servicio)-> {
         //    button.addClickListener(e ->this.editServicio(servicio)); button.setIcon(new Icon(VaadinIcon.EDIT));})).setHeader("Acciones");
 
