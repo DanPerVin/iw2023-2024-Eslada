@@ -31,7 +31,6 @@ public class ContratoListView extends VerticalLayout {
         this.contratoAdder = contratoAdder;
 
 
-
         buildUI();
     }
 
@@ -123,4 +122,4 @@ public class ContratoListView extends VerticalLayout {
         });
     }
 
-}//TODO: Que se vea la imagen y enlace a la ventana de la contrato
+}

@@ -53,12 +53,20 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
         dni.setReadOnly(true);
         this.direccion = new TextField("Dirección");
         this.iban = new TextField("Cuenta corriente");
+
+        HorizontalLayout nombre_apellidos = new HorizontalLayout(nombre,apellidos);
+        HorizontalLayout email_dni = new HorizontalLayout(email,dni);
+        HorizontalLayout direccion_iban = new HorizontalLayout(direccion,iban);
+        
+
         this.addButton = new Button("Añadir", e -> add());
         this.cancelButton = new Button("Cancelar", e -> cancel());
         this.binder = new BeanValidationBinder<>(Contrato.class);
         binder.bindInstanceFields(this);
         HorizontalLayout buttonLayout = new HorizontalLayout(addButton, cancelButton);
-        add(nombre, apellidos, email, dni, direccion, iban, buttonLayout);
+
+
+        add(nombre_apellidos,email_dni, direccion_iban, buttonLayout);
     }
 
     private void cancel() {
