@@ -52,15 +52,9 @@ public class ServicioView extends VerticalLayout {
 
         //add(new H1("Servicios"));
 
-        grid.addColumn(Servicio::getName).setHeader("Nombre");
-        grid.addColumn(Servicio::getPrice).setHeader("Precio");
-//        grid.addColumn(new ComponentRenderer<>(servicio -> {
-//            AccordionPanel accordion = new AccordionPanel();
-//            accordion.setContent(new Text(servicio.getDescription()));
-//            return accordion;
-//        })).setHeader("Descripción");
-        //grid.addColumn(new ComponentRenderer<>(Button::new, (button,servicio)-> {
-        //    button.addClickListener(e ->this.editServicio(servicio)); button.setIcon(new Icon(VaadinIcon.EDIT));})).setHeader("Acciones");
+        grid.addColumn(Servicio::getName).setHeader("Nombre").setSortable(true);;
+        grid.addColumn(Servicio::getPrice).setHeader("Precio").setSortable(true);;
+        grid.addColumn(servicio -> servicio.getServicioType().getName()).setHeader("Tipo").setSortable(true);;
 
         grid.addColumn(new ComponentRenderer<>(HorizontalLayout::new, (layout, servicio) -> {
             Button editButton = new Button("Edit", e -> this.editServicio(servicio));

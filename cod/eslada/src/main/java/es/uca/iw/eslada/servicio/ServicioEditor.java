@@ -1,6 +1,7 @@
 package es.uca.iw.eslada.servicio;
 
 import com.vaadin.flow.component.KeyNotifier;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -13,32 +14,43 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 
+import java.util.List;
+
 @SpringComponent
 @UIScope
 public class ServicioEditor extends VerticalLayout implements KeyNotifier {
-    private final ServicioRepository servicioRepository;
+    private final ServicioService servicioService;
 
     private TextField name;
     private TextArea description;
     private NumberField price;
     private Button saveButton;
     private Button cancelButton;
+
+    private final ComboBox<ServicioType> typeComboBox = new ComboBox<>("Tipo");
     private BeanValidationBinder<Servicio> binder;
     private Servicio servicio;
     private Runnable callback;
 
-    public ServicioEditor(ServicioRepository servicioRepository){
-        this.servicioRepository =servicioRepository;
+    public ServicioEditor(ServicioService servicioService){
+        this.servicioService =servicioService;
 
         this.name = new TextField("Nombre");
         this.description = new TextArea("Descripcion");
         this.price = new NumberField("Precio");
+
+        typeComboBox.setItemLabelGenerator(ServicioType::getName);
+        typeComboBox.setClearButtonVisible(true);
+        typeComboBox.setPlaceholder("Selecciona un tipo");
+        List<ServicioType> availableTypes = servicioService.findAllTypes();
+        typeComboBox.setItems(availableTypes);
+
         this.saveButton = new Button("Guardar",e->save());
         this.cancelButton = new Button("Cancelar", e -> cancel());
         this.binder = new BeanValidationBinder<>(Servicio.class);
         binder.bindInstanceFields(this);
         HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, cancelButton);
-        add(name,description,price, buttonLayout);
+        add(name,description,price,typeComboBox, buttonLayout);
     }
 
     private void cancel() {
@@ -60,8 +72,9 @@ public class ServicioEditor extends VerticalLayout implements KeyNotifier {
     }
 
     private void save(){
-        if(binder.validate().isOk()){
-            servicioRepository.save(servicio);
+        ServicioType type = typeComboBox.getValue();
+        if(binder.validate().isOk() && type!=null){
+            servicioService.saveServicio(servicio,type);
             binder.setBean(null);
             getParent().ifPresent(parent -> {
                 if(parent instanceof Dialog){
