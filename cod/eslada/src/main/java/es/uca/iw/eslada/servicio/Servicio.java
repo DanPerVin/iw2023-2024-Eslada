@@ -23,6 +23,9 @@ public class Servicio{
     @Column
     private double price;
 
+    @ManyToOne
+    @JoinColumn(name="servicioType_id", nullable = false)
+    private ServicioType servicioType;
 
     public UUID getId() {
         return id;
@@ -54,6 +57,14 @@ public class Servicio{
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public ServicioType getServicioType() {
+        return servicioType;
+    }
+
+    public void setServicioType(ServicioType servicioType) {
+        this.servicioType = servicioType;
     }
 
     @Override
