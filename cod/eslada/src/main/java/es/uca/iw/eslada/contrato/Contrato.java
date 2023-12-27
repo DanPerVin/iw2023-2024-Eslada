@@ -40,13 +40,12 @@ public class Contrato {
     @Column
     private LocalDateTime fecha;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "contrato_servicio",
             joinColumns = @JoinColumn(name = "contrato_id"),
             inverseJoinColumns = @JoinColumn(name = "servicio_id")
     )
-
     private Collection<Servicio> servicios;
 
     @ManyToOne(fetch = FetchType.EAGER)

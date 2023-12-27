@@ -179,7 +179,7 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
                 }
             });
         }
-        binder.setBean(null);
+
         if (callback != null) {
             callback.run();
         }
