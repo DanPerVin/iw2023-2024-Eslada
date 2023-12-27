@@ -5,6 +5,9 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -40,6 +43,8 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
     private Optional<User> user = Optional.of(new User());
 
     private Map<ServicioType, MultiSelectComboBox<Servicio>> comboboxes = new HashMap<>();
+
+    private VerticalLayout serviciossummary = new VerticalLayout();
 
     private Runnable callback;
 
@@ -79,17 +84,67 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
 
 
         add(nombre_apellidos,email_dni, direccion_iban);
+
         for(ServicioType servicioType : servicioService.findAllTypes()){
             MultiSelectComboBox<Servicio> comboBox = new MultiSelectComboBox<>();
             comboBox.setLabel(servicioType.getName());
             List<Servicio> serviciosByType = servicioService.findServiciosByServicioType(servicioType);
             comboBox.setItems(serviciosByType);
             comboboxes.put(servicioType, comboBox);
+            comboBox.addValueChangeListener(event -> updateSummary());
             add(comboBox);
         }
 
+        add(new H2("Resumen de Servicios: "));
+        serviciossummary.add(new H4("Sin servicios seleccionados"));
+//        for(Map.Entry<ServicioType, MultiSelectComboBox<Servicio>> entry : comboboxes.entrySet()){
+//            ServicioType servicioType = entry.getKey();
+//            MultiSelectComboBox<Servicio> comboBox = entry.getValue();
+//            if(!comboBox.getSelectedItems().isEmpty()){
+//                Grid<Servicio> servicioGrid = new Grid<>();
+//
+//                servicioGrid.addColumn(Servicio::getName).setHeader("Nombre");
+//                servicioGrid.addColumn(Servicio::getDescription).setHeader("Descripcion");
+//                servicioGrid.addColumn(Servicio::getPrice).setHeader("Precio");
+//
+//                servicioGrid.setItems(comboBox.getSelectedItems());
+//
+//                serviciossummary.add(new H4(servicioType.getName()), servicioGrid);
+//            }else{
+//                serviciossummary.add(new H4("Sin servicio de tipo "+servicioType.getName()));
+//            }
+//        }
+
+        add(serviciossummary);
+
+
+
         add(buttonLayout);
 
+    }
+
+    private void updateSummary() {
+
+        serviciossummary.removeAll();
+
+
+        for(Map.Entry<ServicioType, MultiSelectComboBox<Servicio>> entry : comboboxes.entrySet()){
+            ServicioType servicioType = entry.getKey();
+            MultiSelectComboBox<Servicio> comboBox = entry.getValue();
+            if(!comboBox.getSelectedItems().isEmpty()){
+                Grid<Servicio> servicioGrid = new Grid<>();
+
+                servicioGrid.addColumn(Servicio::getName).setHeader("Nombre");
+                servicioGrid.addColumn(Servicio::getDescription).setHeader("Descripcion");
+                servicioGrid.addColumn(Servicio::getPrice).setHeader("Precio");
+
+                servicioGrid.setItems(comboBox.getSelectedItems());
+
+                serviciossummary.add(new H4(servicioType.getName()), servicioGrid);
+            }else{
+                serviciossummary.add(new H4("Sin servicio de tipo "+servicioType.getName()));
+            }
+        }
     }
 
     private void cancel() {
@@ -124,6 +179,7 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
                 }
             });
         }
+        binder.setBean(null);
         if (callback != null) {
             callback.run();
         }

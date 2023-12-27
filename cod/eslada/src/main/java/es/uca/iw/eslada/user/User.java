@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -56,13 +58,7 @@ public class User { //TODO: change fields properties (to fit form)
     )
     private Collection<Rol> roles;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_contrato",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "contrato_id")
-    )
-    private Collection<Contrato> contratos;
+
 
 //    @Enumerated(EnumType.STRING)
 //    private UserRole userRole = UserRole.USER; //user by default
@@ -95,9 +91,7 @@ public class User { //TODO: change fields properties (to fit form)
         return username;
     }
 
-    public Collection<Contrato> getContratos() {
-        return contratos;
-    }
+
 
     public void setUsername(String username) {
         this.username = username;
@@ -136,9 +130,7 @@ public class User { //TODO: change fields properties (to fit form)
         this.roles = roles;
     }
 
-    public void setContratos(Collection<Contrato> contratos) {
-        this.contratos = contratos;
-    }
+
 
     @Override
     public boolean equals(Object obj) {

@@ -50,11 +50,7 @@ public class Contrato {
     private Collection<Servicio> servicios;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "contrato_usuario",
-            joinColumns = @JoinColumn(name = "contrato_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
+    @JoinColumn(name = "user_id")
     private User user;
 
     public UUID getId() { return id; }
