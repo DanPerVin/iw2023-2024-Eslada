@@ -2,6 +2,8 @@ package es.uca.iw.eslada.contrato;
 
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -9,15 +11,20 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import es.uca.iw.eslada.servicio.Servicio;
+import es.uca.iw.eslada.servicio.ServicioService;
+import es.uca.iw.eslada.servicio.ServicioType;
 import es.uca.iw.eslada.user.AuthenticatedUser;
 import es.uca.iw.eslada.user.User;
 
-import java.util.Optional;
+import java.util.*;
 
 @SpringComponent
 @UIScope
 public class ContratoAdder extends VerticalLayout implements KeyNotifier {
-    private final ContratoRepository contratoRepository;
+    private final ContratoService contratoService;
+
+    private final ServicioService servicioService;
     private final AuthenticatedUser authenticatedUser;
 
     private TextField nombre;
@@ -30,13 +37,18 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
     private Button cancelButton;
     private BeanValidationBinder<Contrato> binder;
 
+    private Optional<User> user = Optional.of(new User());
+
+    private Map<ServicioType, MultiSelectComboBox<Servicio>> comboboxes = new HashMap<>();
+
     private Runnable callback;
 
-    public ContratoAdder(ContratoRepository contratoRepository, AuthenticatedUser authenticatedUser){
-        this.contratoRepository = contratoRepository;
+    public ContratoAdder(ContratoService contratoService,ServicioService servicioService, AuthenticatedUser authenticatedUser){
+        this.contratoService = contratoService;
+        this.servicioService = servicioService;
         this.authenticatedUser = authenticatedUser;
 
-        Optional<User> user = Optional.of(new User());
+//        Optional<User> user = Optional.of(new User());
 
         user = authenticatedUser.get();
         this.nombre = new TextField("Nombre");
@@ -66,7 +78,18 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
         HorizontalLayout buttonLayout = new HorizontalLayout(addButton, cancelButton);
 
 
-        add(nombre_apellidos,email_dni, direccion_iban, buttonLayout);
+        add(nombre_apellidos,email_dni, direccion_iban);
+        for(ServicioType servicioType : servicioService.findAllTypes()){
+            MultiSelectComboBox<Servicio> comboBox = new MultiSelectComboBox<>();
+            comboBox.setLabel(servicioType.getName());
+            List<Servicio> serviciosByType = servicioService.findServiciosByServicioType(servicioType);
+            comboBox.setItems(serviciosByType);
+            comboboxes.put(servicioType, comboBox);
+            add(comboBox);
+        }
+
+        add(buttonLayout);
+
     }
 
     private void cancel() {
@@ -83,8 +106,17 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
     private void add(){
         Contrato contrato = new Contrato();
         binder.writeBeanIfValid(contrato);
-        if (contrato.getNombre() != null) {
-            contratoRepository.save(contrato);
+        Collection<Servicio> selectedServicios = new ArrayList<>();
+
+        for(Map.Entry<ServicioType, MultiSelectComboBox<Servicio>> entry : comboboxes.entrySet()){
+            Collection<Servicio> selectedServiciosinType = new ArrayList<>(entry.getValue().getSelectedItems());
+            if(!selectedServiciosinType.isEmpty()){
+                selectedServicios.addAll(selectedServiciosinType);
+            }
+        }
+
+        if (contrato.getNombre() != null && !selectedServicios.isEmpty() && user.isPresent()) {
+            contratoService.save(contrato,user.get(),selectedServicios);
             binder.setBean(null);
             getParent().ifPresent(parent -> {
                 if(parent instanceof Dialog){

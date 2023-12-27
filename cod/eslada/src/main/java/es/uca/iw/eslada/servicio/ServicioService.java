@@ -32,4 +32,8 @@ public class ServicioService {
             return false;
         }
     }
+
+    public List<Servicio> findServiciosByServicioType(ServicioType servicioType) {
+        return servicioRepository.findServiciosByServicioType(servicioType);
+    }
 }
