@@ -19,6 +19,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 
 
 
@@ -53,11 +54,11 @@ public class ServicioView extends VerticalLayout {
 
         grid.addColumn(Servicio::getName).setHeader("Nombre");
         grid.addColumn(Servicio::getPrice).setHeader("Precio");
-        grid.addColumn(new ComponentRenderer<>(servicio -> {
-            AccordionPanel accordion = new AccordionPanel();
-            accordion.setContent(new Text(servicio.getDescription()));
-            return accordion;
-        })).setHeader("Descripción");
+//        grid.addColumn(new ComponentRenderer<>(servicio -> {
+//            AccordionPanel accordion = new AccordionPanel();
+//            accordion.setContent(new Text(servicio.getDescription()));
+//            return accordion;
+//        })).setHeader("Descripción");
         //grid.addColumn(new ComponentRenderer<>(Button::new, (button,servicio)-> {
         //    button.addClickListener(e ->this.editServicio(servicio)); button.setIcon(new Icon(VaadinIcon.EDIT));})).setHeader("Acciones");
 
@@ -71,10 +72,16 @@ public class ServicioView extends VerticalLayout {
             layout.add(deleteButton);
         })).setHeader("Acciones");
 
+        grid.setItemDetailsRenderer(createServicioDetailsRenderer());
+
         //TODO: AÑADIR BARRA DE BUSQUEDA
         grid.setItems(servicioService.findAll());
 
         add(grid);
+    }
+
+    private static ComponentRenderer<Text, Servicio> createServicioDetailsRenderer() {
+        return new ComponentRenderer<>(servicio -> new Text(servicio.getDescription()));
     }
 
     private void editServicio(Servicio servicio) {
@@ -91,7 +98,7 @@ public class ServicioView extends VerticalLayout {
         dialog.add(servicioEditor);
 
         dialog.setDraggable(true);
-        dialog.setResizable(true);
+        dialog.setResizable(true); //TODO : CUESTIONARSE EL SI DEBERIA DE SER RESIZABLE
 
         dialog.open();
         dialog.addDialogCloseActionListener(e-> {
