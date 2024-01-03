@@ -15,6 +15,7 @@ import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import es.uca.iw.eslada.contrato.ContratoEditView;
 import es.uca.iw.eslada.contrato.ContratoListView;
+import es.uca.iw.eslada.servicio.ServicioTypeView;
 import es.uca.iw.eslada.servicio.ServicioView;
 
 
@@ -67,6 +68,9 @@ public class MainLayout extends AppLayout {
 
         if(accessChecker.hasAccess(ServicioView.class)){
             nav.addItem(new SideNavItem("Servicios List", ServicioView.class,VaadinIcon.ANCHOR.create()));
+        }
+        if(accessChecker.hasAccess(ServicioTypeView.class)){
+            nav.addItem(new SideNavItem("Servicio Types List", ServicioTypeView.class,VaadinIcon.ANCHOR.create()));
         }
 
         if (accessChecker.hasAccess(ContratoListView.class)) {
