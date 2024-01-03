@@ -9,4 +9,6 @@ public interface ServicioRepository extends JpaRepository<Servicio,UUID> {
     void deleteById(UUID id);
 
     List<Servicio> findServiciosByServicioType(ServicioType servicioType);
+
+    void deleteAllByServicioType(ServicioType servicioType);
 }
