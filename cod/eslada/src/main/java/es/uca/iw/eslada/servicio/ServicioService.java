@@ -36,4 +36,6 @@ public class ServicioService {
     public List<Servicio> findServiciosByServicioType(ServicioType servicioType) {
         return servicioRepository.findServiciosByServicioType(servicioType);
     }
+
+    public void saveServicioType(ServicioType servicioType) { servicioTypeRepository.save(servicioType);}
 }

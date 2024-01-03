@@ -1,8 +1,10 @@
 package es.uca.iw.eslada.servicio;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -16,9 +18,11 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("ROLE_ADMIN")
 public class ServicioTypeView extends VerticalLayout {
     private final ServicioService servicioService;
+    private final ServicioTypeAdder servicioTypeAdder;
     private final Grid<ServicioType> grid = new Grid<>(ServicioType.class,false);
-    public ServicioTypeView(ServicioService servicioService){
+    public ServicioTypeView(ServicioService servicioService,ServicioTypeAdder servicioTypeAdder){
         this.servicioService = servicioService;
+        this.servicioTypeAdder = servicioTypeAdder;
 
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidthFull();
@@ -56,5 +60,22 @@ public class ServicioTypeView extends VerticalLayout {
     }
 
     private void addServicioType() {
+        servicioTypeAdder.setCallback(()->{
+            grid.setItems(servicioService.findAllTypes());
+        });
+        Dialog dialog = new Dialog();
+        H2 headline = new H2("Add ServicioType");
+        dialog.add(headline);
+        headline.getElement().getClassList().add("draggable");
+
+        dialog.add(servicioTypeAdder);
+        dialog.setDraggable(true);
+        dialog.setResizable(true);
+
+        dialog.open();
+        dialog.addDialogCloseActionListener(e-> {
+            grid.setItems(servicioService.findAllTypes());
+            dialog.close();
+        });
     }
 }
