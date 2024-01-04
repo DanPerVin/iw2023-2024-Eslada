@@ -2,6 +2,8 @@ package es.uca.iw.eslada.servicio;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 @Service
 public class ServicioService {
@@ -31,5 +33,19 @@ public class ServicioService {
         } catch (DataIntegrityViolationException e) {
             return false;
         }
+    }
+
+    public List<Servicio> findServiciosByServicioType(ServicioType servicioType) {
+        return servicioRepository.findServiciosByServicioType(servicioType);
+    }
+
+    public void saveServicioType(ServicioType servicioType) { servicioTypeRepository.save(servicioType);}
+    public void deleteAllServiciosByServicioType(ServicioType servicioType){
+        servicioRepository.deleteAllByServicioType(servicioType);
+    }
+    @Transactional
+    public void deleteServicioType(ServicioType servicioType){
+        deleteAllServiciosByServicioType(servicioType);
+        servicioTypeRepository.delete(servicioType);
     }
 }

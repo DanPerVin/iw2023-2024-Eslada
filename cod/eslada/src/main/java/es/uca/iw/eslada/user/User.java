@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -32,6 +34,9 @@ public class User { //TODO: change fields properties (to fit form)
     @Column(length = 100)
     private String name;
 
+    @Column(length = 100)
+    private String surname;
+
     @Column(length = 9)
     @Size(min = 9,max = 9)
     @Pattern(regexp = "^[0-9]{8}[A-Za-z]$")
@@ -53,13 +58,7 @@ public class User { //TODO: change fields properties (to fit form)
     )
     private Collection<Rol> roles;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_contrato",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "contrato_id")
-    )
-    private Collection<Contrato> contratos;
+
 
 //    @Enumerated(EnumType.STRING)
 //    private UserRole userRole = UserRole.USER; //user by default
@@ -76,6 +75,10 @@ public class User { //TODO: change fields properties (to fit form)
         return name;
     }
 
+    public String getSurname() {
+        return surname;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -88,9 +91,7 @@ public class User { //TODO: change fields properties (to fit form)
         return username;
     }
 
-    public Collection<Contrato> getContratos() {
-        return contratos;
-    }
+
 
     public void setUsername(String username) {
         this.username = username;
@@ -112,6 +113,11 @@ public class User { //TODO: change fields properties (to fit form)
         this.name = name;
     }
 
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -124,9 +130,7 @@ public class User { //TODO: change fields properties (to fit form)
         this.roles = roles;
     }
 
-    public void setContratos(Collection<Contrato> contratos) {
-        this.contratos = contratos;
-    }
+
 
     @Override
     public boolean equals(Object obj) {

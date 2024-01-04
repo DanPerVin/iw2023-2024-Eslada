@@ -40,21 +40,16 @@ public class Contrato {
     @Column
     private LocalDateTime fecha;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "contrato_servicio",
             joinColumns = @JoinColumn(name = "contrato_id"),
             inverseJoinColumns = @JoinColumn(name = "servicio_id")
     )
-
     private Collection<Servicio> servicios;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "contrato_usuario",
-            joinColumns = @JoinColumn(name = "contrato_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
+    @JoinColumn(name = "user_id")
     private User user;
 
     public UUID getId() { return id; }
@@ -98,6 +93,7 @@ public class Contrato {
     public void setEmail(String email) { this.email = email; }
 
     public void setDni(String dni) { this.dni = dni; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
 
     public void setIban(String iban) { this.iban = iban; }
 
