@@ -2,12 +2,14 @@ package es.uca.iw.eslada.contrato;
 
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.charts.model.Label;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -127,7 +129,7 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
 
         serviciossummary.removeAll();
 
-
+        double totalPrice = 0;
         for(Map.Entry<ServicioType, MultiSelectComboBox<Servicio>> entry : comboboxes.entrySet()){
             ServicioType servicioType = entry.getKey();
             MultiSelectComboBox<Servicio> comboBox = entry.getValue();
@@ -141,10 +143,16 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
                 servicioGrid.setItems(comboBox.getSelectedItems());
 
                 serviciossummary.add(new H4(servicioType.getName()), servicioGrid);
+
+                for(Servicio servicio : comboBox.getSelectedItems()){
+                    totalPrice += servicio.getPrice();
+                }
             }else{
                 serviciossummary.add(new H4("Sin servicio de tipo "+servicioType.getName()));
             }
         }
+        H4 totalPriceText = new H4("Precio total de servicios escogidos: " + totalPrice + " €");
+        serviciossummary.add(totalPriceText);
     }
 
     private void cancel() {
