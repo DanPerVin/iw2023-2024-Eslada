@@ -97,7 +97,7 @@ public class Contrato {
 
     public void setIban(String iban) { this.iban = iban; }
 
-    public void setFecha(LocalDateTime fecha) {this.fecha = fecha; }
+    public void setFecha() {this.fecha = LocalDateTime.now(); }
 
     public void setServicios(Collection<Servicio> servicios) {
         this.servicios = servicios;

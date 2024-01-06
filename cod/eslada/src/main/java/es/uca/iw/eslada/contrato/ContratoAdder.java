@@ -2,11 +2,14 @@ package es.uca.iw.eslada.contrato;
 
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.charts.model.Label;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -19,7 +22,6 @@ import es.uca.iw.eslada.servicio.ServicioType;
 import es.uca.iw.eslada.user.AuthenticatedUser;
 import es.uca.iw.eslada.user.User;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @SpringComponent
@@ -177,7 +179,6 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
         }
 
         if (contrato.getNombre() != null && !selectedServicios.isEmpty() && user.isPresent()) {
-            contrato.setFecha(LocalDateTime.now());
             contratoService.save(contrato,user.get(),selectedServicios);
             binder.setBean(null);
             getParent().ifPresent(parent -> {

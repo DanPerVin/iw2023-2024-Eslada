@@ -7,9 +7,9 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -58,9 +58,6 @@ public class User { //TODO: change fields properties (to fit form)
     )
     private Collection<Rol> roles;
 
-   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Contrato> contratos = new ArrayList<>();
-
 
 
 //    @Enumerated(EnumType.STRING)
@@ -80,14 +77,6 @@ public class User { //TODO: change fields properties (to fit form)
 
     public String getSurname() {
         return surname;
-    }
-
-    public List<Contrato> getContratos() {
-        return contratos;
-    }
-
-    public void setContratos(List<Contrato> contratos) {
-        this.contratos = contratos;
     }
 
     public String getPassword() {
