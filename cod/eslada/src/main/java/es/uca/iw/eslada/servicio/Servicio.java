@@ -1,9 +1,11 @@
 package es.uca.iw.eslada.servicio;
 
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import es.uca.iw.eslada.contrato.Contrato;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
+import java.util.Collection;
 import java.util.UUID;
 
 @Entity
@@ -26,6 +28,9 @@ public class Servicio{
     @ManyToOne
     @JoinColumn(name="servicioType_id", nullable = false)
     private ServicioType servicioType;
+
+    @ManyToMany(mappedBy = "servicios")
+    private Collection<Contrato> contratos;
 
     public UUID getId() {
         return id;
@@ -65,6 +70,14 @@ public class Servicio{
 
     public void setServicioType(ServicioType servicioType) {
         this.servicioType = servicioType;
+    }
+
+    public Collection<Contrato> getContratos() {
+        return contratos;
+    }
+
+    public void setContratos(Collection<Contrato> contratos) {
+        this.contratos = contratos;
     }
 
     @Override

@@ -1,8 +1,13 @@
 package es.uca.iw.eslada.contrato;
 
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -19,15 +24,27 @@ import java.util.stream.Stream;
 public class ContratoListView extends VerticalLayout {
     private final ContratoService contratoService;
     private final Grid<Contrato> grid = new Grid<>(Contrato.class, false);
+    private final ContratoAdder contratoAdder;
 
-    public ContratoListView(ContratoService contratoService) {
+    public ContratoListView(ContratoService contratoService,ContratoAdder contratoAdder) {
         this.contratoService = contratoService;
+        this.contratoAdder = contratoAdder;
+
 
         buildUI();
     }
 
     private void buildUI() {
-        add(new H1("Contratos"));
+        H1 title = new H1("Contratos");
+        HorizontalLayout headerLayout = new HorizontalLayout();
+        headerLayout.setWidthFull();
+        headerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        Button addButton = new Button("Contratar", VaadinIcon.PLUS.create(), e -> addContrato());
+
+        headerLayout.add(title, addButton);
+
+        add(headerLayout);
         //grid.addColumn(createContratoRenderer()).setHeader("Image").setAutoWidth(true).setFlexGrow(0);
         grid.addColumn(Contrato::getNombre).setHeader("Nombre");
         grid.addColumn(Contrato::getApellidos).setHeader("Apellidos");
@@ -84,4 +101,25 @@ public class ContratoListView extends VerticalLayout {
         }
     }
 
-}//TODO: Que se vea la imagen y enlace a la ventana de la contrato
+    private void addContrato() {
+        contratoAdder.setCallback(() -> {
+            grid.setItems(contratoService.findAll());
+        });
+        Dialog dialog = new Dialog();
+        H2 headline = new H2("Add Contrato");
+        dialog.add(headline);
+        headline.getElement().getClassList().add("draggable");
+
+        dialog.add(contratoAdder);
+
+        dialog.setDraggable(true);
+        dialog.setResizable(true);
+
+        dialog.open();
+        dialog.addDialogCloseActionListener(e-> {
+            grid.setItems(contratoService.findAll());
+            dialog.close();
+        });
+    }
+
+}
