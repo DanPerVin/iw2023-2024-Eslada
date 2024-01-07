@@ -34,19 +34,20 @@ public class ContratoListView extends VerticalLayout {
     private final Grid<Contrato> grid = new Grid<>(Contrato.class, false);
     private final ContratoAdder contratoAdder;
 
-
+    private Optional<User> optionalUser;
+    private User user;
     public ContratoListView(AuthenticatedUser authenticatedUser,ContratoService contratoService,ContratoAdder contratoAdder) {
         this.authenticatedUser = authenticatedUser;
         this.contratoService = contratoService;
         this.contratoAdder = contratoAdder;
 
-        Optional<User> optionalUser = authenticatedUser.get();
+        optionalUser = authenticatedUser.get();
         if (!optionalUser.isPresent()) {
             add(new H1("No se encuentra Loggeado."));
             return;
         }
 
-        User user = optionalUser.get();
+        user = optionalUser.get();
 
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidthFull();
@@ -127,7 +128,7 @@ public class ContratoListView extends VerticalLayout {
 
     private void addContrato() {
         contratoAdder.setCallback(() -> {
-            grid.setItems(contratoService.findAll());
+            grid.setItems(contratoService.findAllByUser(user));
         });
         Dialog dialog = new Dialog();
         H2 headline = new H2("Add Contrato");
@@ -141,7 +142,7 @@ public class ContratoListView extends VerticalLayout {
 
         dialog.open();
         dialog.addDialogCloseActionListener(e-> {
-            grid.setItems(contratoService.findAll());
+            grid.setItems(contratoService.findAllByUser(user));
             dialog.close();
         });
     }
