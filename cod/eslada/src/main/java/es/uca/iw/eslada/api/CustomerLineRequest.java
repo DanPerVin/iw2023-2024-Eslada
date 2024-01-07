@@ -1,6 +1,7 @@
 package es.uca.iw.eslada.api;
 import jakarta.validation.constraints.*;
 public class CustomerLineRequest {
+    //TODO: plantear cambio de customerlinerequest a solo customer
     @NotNull
     @Size(min = 0, max = 20)
     private String name;
