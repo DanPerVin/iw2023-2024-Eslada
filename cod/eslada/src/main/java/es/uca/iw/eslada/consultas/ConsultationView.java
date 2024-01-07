@@ -3,6 +3,7 @@ package es.uca.iw.eslada.consultas;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
@@ -29,34 +30,53 @@ public class ConsultationView extends VerticalLayout {
 
     private ConsultationService consultationService;
 
+    private ConsultationAdder consultationAdder;
+
 
     private AuthenticatedUser authenticatedUser;
+
+    Checkbox checkbox;
+
 
 
     private final Grid<Consultation> grid = new Grid<>(Consultation.class,false);
 
-    public ConsultationView(AuthenticatedUser authenticatedUser, ConsultationService consultationService) {
+    public ConsultationView(AuthenticatedUser authenticatedUser, ConsultationService consultationService,
+                            ConsultationAdder consultationAdder) {
 
         this.authenticatedUser = authenticatedUser;
         this.consultationService = consultationService;
+        this.consultationAdder = consultationAdder;
 
+        checkbox = new Checkbox();
+        checkbox.setLabel("Ver las consultas cerradas");
+        checkbox.addValueChangeListener(e -> {
+                if(checkbox.getValue())
+                    grid.setItems(consultationService.findAll());
+                else
+                    grid.setItems(consultationService.findByClosed(false));
+        });
+
+        //Barra superior
         HorizontalLayout C1 = new HorizontalLayout();
 
         C1.setWidthFull();
         C1.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
 
+        //Titulo y boton de crear consulta
         C1.add(new H1("Consultas"));
-
         Button addNewConsultation = new Button("Nueva Consulta", e -> addConsultation());
 
+
+        //Barra de busqueda no funcional (Opcional)
         /*if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN")) {
         TextField searchField = new TextField();
         searchField.setWidth("50%");
         searchField.setPlaceholder("Search");
         searchField.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
         searchField.setValueChangeMode(ValueChangeMode.EAGER);
-        searchField.addValueChangeListener(e -> {   //TODO: Morir
+        searchField.addValueChangeListener(e -> {
             UUID id = UUID.fromString(e.getValue());
                 if (!searchField.isEmpty())
                     grid.setItems(consultationService.findById(id).stream().toList());
@@ -66,39 +86,41 @@ public class ConsultationView extends VerticalLayout {
         }*/
 
 
-        if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("USER"))
+        //Si eres usuario puedes crear consultas
+        if (authenticatedUser.get().get().getRoles().iterator().next().getName().matches("USER"))
             C1.add(addNewConsultation);
+        if (authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN"))
+            C1.add(checkbox);
 
 
         add(C1);
 
+        //Creacion de las lineas del GRID, Si se es admin puedes cerrar las consultas
         grid.addColumn(Consultation::getId).setHeader("Id").setSortable(true);
         grid.addColumn(Consultation::getName).setHeader("Asunto");
         grid.addColumn(consultation -> consultation.getUser().getUsername()).setHeader("Usuario");
         grid.addColumn(Consultation::getCreationDate).setHeader("Fecha de creación").setSortable(true);
-        grid.addColumn(Consultation::getClosed).setHeader("Cerrado");
-        //grid.addColumn(consultation -> consultation.getFirstMessage().getMessageString()).setHeader("Primer mensaje");
-        grid.addColumn(new ComponentRenderer<>(HorizontalLayout::new, (layout, consultation) -> {
+        grid.addColumn(Consultation::getClosed).setHeader("Cerrado").setSortable(true);
+        if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN")) {
+            grid.addColumn(new ComponentRenderer<>(HorizontalLayout::new, (layout, consultation) -> {
+                Button closeConsultation = new Button("Cerrar", e -> this.closeConsultation(consultation));
 
-            //Buttons (openChat as doubleclickListener) TODO: Revisar esto
-            //Button openChatConsultation = new Button("Abrir consulta", e -> this.closeConsultation(consultation)); //TODO: Cambiar evento
-            Button closeConsultation = new Button("Cerrar", e -> this.closeConsultation(consultation));
+                closeConsultation.setIcon(new Icon(VaadinIcon.TICKET));
 
-            //Icons
-            //openChatConsultation.setIcon(new Icon(VaadinIcon.TICKET));
-            closeConsultation.setIcon(new Icon(VaadinIcon.TICKET));
-
-            //Add Buttons depending on user
-            //layout.add(openChatConsultation);
-            if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN"))
                 layout.add(closeConsultation);
 
-        })).setHeader("Acciones");
+            })).setHeader("Acciones");
+        }
 
+        //Evento para abrir el chat de la consulta
         grid.addItemDoubleClickListener(consultation -> UI.getCurrent().navigate("message/" + consultation.getItem().getId()));
 
+        //Si eres admin ves las consultas abiertas, si eres user ves todas tus consultas
         if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN"))
-            grid.setItems(consultationService.findByClosed(false));
+            if(checkbox.getValue())
+                grid.setItems(consultationService.findAll());
+            else
+                grid.setItems(consultationService.findByClosed(false));
         if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("USER"))
             grid.setItems(consultationService.findByUser(authenticatedUser.get().get()));
 
@@ -106,6 +128,7 @@ public class ConsultationView extends VerticalLayout {
 
     }
 
+    //Funcion para crear consulta
     private void addConsultation() {
         //TODO: Añadir consulta
         Dialog newConsultationDiag = new Dialog();
@@ -113,12 +136,15 @@ public class ConsultationView extends VerticalLayout {
         newConsultationDiag.add(headline);
         headline.getElement().getClassList().add("draggable");
 
+        newConsultationDiag.add(consultationAdder);
+
         newConsultationDiag.setDraggable(true);
         newConsultationDiag.setResizable(true);
 
         newConsultationDiag.open();
     }
 
+    //Funcion para cerrar consulta (NO SE BORRAN)
     private void closeConsultation(Consultation consultation) {
         Notification notification = new Notification("Has cerrado la consulta: " + consultation.getId());
         notification.setDuration(5000);
@@ -133,10 +159,12 @@ public class ConsultationView extends VerticalLayout {
         Button cancelButton = new Button("Cancelar", e -> dialog.close());
         Button closeButton = new Button("Cerrar", e -> {
             consultationService.closeConsultation(consultation);
-            consultationService.findByClosed(false);
             dialog.close();
             notification.open();
-            grid.setItems(consultationService.findByClosed(false));
+            if(checkbox.getValue())
+                grid.setItems(consultationService.findAll());
+            else
+                grid.setItems(consultationService.findByClosed(false));
         });
 
         closeButton.setThemeName("error");

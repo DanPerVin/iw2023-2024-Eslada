@@ -56,6 +56,10 @@ public class MessageView extends VerticalLayout implements HasUrlParameter<Strin
     public void setParameter(BeforeEvent event, String parameter) {
         consultation = consultationService.findById(UUID.fromString(parameter));
 
+        if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("USER") &&
+                authenticatedUser.get().get().getUsername() != consultation.get().getUser().getUsername())
+            UI.getCurrent().navigate("/consultation");
+
         add(C1(), C2(), C3());
     }
 

@@ -33,5 +33,9 @@ public class ConsultationService {
         consultationRepository.save(consultation);
     }
 
+    public void save(Consultation consultation) {
+        consultationRepository.save(consultation);
+    }
+
 
 }

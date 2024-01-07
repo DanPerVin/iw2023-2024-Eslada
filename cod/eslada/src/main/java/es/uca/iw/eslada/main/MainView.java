@@ -23,11 +23,18 @@ public class MainView extends VerticalLayout {
     private final Button register = new Button("Registrarse como Usuario");
     public MainView() {
 
-        admin.addClickListener(e -> UI.getCurrent().navigate("admin_view"));
-        usuario.addClickListener(e -> UI.getCurrent().navigate("user_view"));
+        Dialog logins = new Dialog();
+
+        admin.addClickListener(e -> {
+            UI.getCurrent().navigate("admin_view");
+            logins.close();
+        });
+        usuario.addClickListener(e -> {
+            UI.getCurrent().navigate("user_view");
+            logins.close();
+        });
         register.addClickListener(e -> UI.getCurrent().navigate("register"));
 
-        Dialog logins = new Dialog();
         logins.setHeaderTitle("Selecciona como quiere iniciar sesion:");
         VerticalLayout dialogLayout = new VerticalLayout();
         dialogLayout.add(usuario, admin);
