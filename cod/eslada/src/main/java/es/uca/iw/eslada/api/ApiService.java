@@ -53,4 +53,12 @@ public class ApiService {
         return restTemplate.exchange(url, HttpMethod.PATCH, entity, CustomerLine.class);
     }
 
+    public ResponseEntity<Void> deleteInfo(String id) {
+        String url = "http://omr-simulator.us-east-1.elasticbeanstalk.com/" + id + "?carrier=eslada";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "*/*");
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+        return restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+    }
+
 }

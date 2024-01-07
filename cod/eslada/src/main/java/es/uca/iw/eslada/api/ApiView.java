@@ -1,5 +1,6 @@
 package es.uca.iw.eslada.api;
 
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -52,11 +53,39 @@ public class ApiView extends VerticalLayout {
             editButton.setIcon(new Icon(VaadinIcon.EDIT));
             layout.add(editButton);
 
+            Button deleteButton = new Button("Delete", e -> this.deleteLine(line));
+            deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
+            layout.add(deleteButton);
         })).setHeader("Acciones");
         fetchData();
 
 
         add(grid);
+    }
+
+    private void deleteLine(CustomerLine line) {
+        Dialog dialog = new Dialog();
+        H2 headline = new H2("Delete Line");
+        dialog.add(headline);
+        headline.getElement().getClassList().add("draggable");
+        Text message = new Text("¿ Seguro que quieres borrar la linea ?");
+        dialog.add(message);
+
+        Button cancelButton = new Button("Cancel", e -> dialog.close());
+        Button deleteButton = new Button("Delete", e -> {
+            apiService.deleteInfo(line.getId());
+            fetchData();
+            dialog.close();
+        });
+
+        deleteButton.setThemeName("error");
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, deleteButton);
+        dialog.add(buttonLayout);
+
+        dialog.setDraggable(true);
+        dialog.setResizable(true);
+
+        dialog.open();
     }
 
     private void addLinea() {
