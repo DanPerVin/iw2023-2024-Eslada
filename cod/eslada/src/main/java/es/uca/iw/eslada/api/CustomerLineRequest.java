@@ -1,9 +1,18 @@
 package es.uca.iw.eslada.api;
-
+import jakarta.validation.constraints.*;
 public class CustomerLineRequest {
+    @NotNull
+    @Size(min = 0, max = 20)
     private String name;
+
+    @NotNull
+    @Size(min = 0, max = 20)
     private String surname;
+
+    @NotNull
+    @Size(min = 0, max = 20)
     private String carrier;
+
     private String phoneNumber;
 
     public String getName() {
