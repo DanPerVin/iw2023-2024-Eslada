@@ -43,4 +43,18 @@ public class ContratoService {
                 .map(Servicio::getName)
                 .collect(Collectors.joining(", "));
     }
+
+    public double getServiciosPrecio(Contrato contrato){
+        double precioTotal = 0;
+        Collection<Servicio> servicios = contrato.getServicios();
+        for (Servicio servicio : servicios) {
+            precioTotal += servicio.getPrice();
+        }
+        return precioTotal;
+    }
+
+    public List<Contrato> findAllByUser(User user){
+        return contratoRepository.findAllByUserIs(user);
+    }
+
 }
