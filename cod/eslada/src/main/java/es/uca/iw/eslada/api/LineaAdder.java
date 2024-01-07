@@ -75,7 +75,7 @@ public class LineaAdder extends VerticalLayout implements KeyNotifier {
                     }
                 });
             } else {
-                Notification notification = Notification.show("Error en la creación");
+                Notification notification = Notification.show("Error en la creación: "+ response.getStatusCode());
                 notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         }

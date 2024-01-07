@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -20,8 +23,8 @@ public class ApiService {
     private final RestTemplate restTemplate;
 
     @Autowired
-    public ApiService(RestTemplateBuilder builder){
-        this.restTemplate = builder.build();
+    public ApiService(RestTemplate restTemplate){
+        this.restTemplate = restTemplate;
     }
 
     public ResponseEntity<List<CustomerLine>> getInfo() { //solo busca eslada.
@@ -39,6 +42,15 @@ public class ApiService {
         headers.set("Content-Type", "application/json");
         HttpEntity<CustomerLineRequest> entity = new HttpEntity<>(request, headers);
         return restTemplate.postForEntity(url, entity, CustomerLine.class);
+    }
+
+    public ResponseEntity<CustomerLine> patchInfo(String id, CustomerLineRequest request) {
+        String url = "http://omr-simulator.us-east-1.elasticbeanstalk.com/" + id;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "application/hal+json");
+        headers.set("Content-Type", "application/json");
+        HttpEntity<CustomerLineRequest> entity = new HttpEntity<>(request, headers);
+        return restTemplate.exchange(url, HttpMethod.PATCH, entity, CustomerLine.class);
     }
 
 }

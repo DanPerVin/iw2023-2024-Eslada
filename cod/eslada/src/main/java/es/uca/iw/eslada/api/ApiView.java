@@ -26,10 +26,13 @@ public class ApiView extends VerticalLayout {
     private final ApiService apiService;
     private final LineaAdder lineaAdder;
 
+    private final LineaEditor lineaEditor;
+
     private final Grid<CustomerLine> grid = new Grid<>(CustomerLine.class);
-    public ApiView(ApiService apiService, LineaAdder lineaAdder){
+    public ApiView(ApiService apiService, LineaAdder lineaAdder, LineaEditor lineaEditor){
         this.apiService =  apiService;
         this.lineaAdder = lineaAdder;
+        this.lineaEditor = lineaEditor;
         //TODO: crear boton de nuevo custommerline en lugar de postinfo
 
         HorizontalLayout headerLayout = new HorizontalLayout();
@@ -86,7 +89,25 @@ public class ApiView extends VerticalLayout {
     }
 
     private void editLine(CustomerLine line) {
-        Notification notification = Notification.show("la linea es : "+line.getName());
+        lineaEditor.editLine(line);
+        lineaEditor.setCallback(() -> {
+            fetchData();
+        });
 
+        Dialog dialog = new Dialog();
+        H2 headline = new H2("Editar Linea");
+        dialog.add(headline);
+        headline.getElement().getClassList().add("draggable");
+
+        dialog.add(lineaEditor);
+
+        dialog.setDraggable(true);
+        dialog.setResizable(true);
+
+        dialog.open();
+        dialog.addDialogCloseActionListener(e-> {
+            fetchData();
+            dialog.close();
+        });
     }
 }
