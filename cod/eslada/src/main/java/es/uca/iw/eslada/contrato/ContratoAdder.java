@@ -21,7 +21,9 @@ import es.uca.iw.eslada.servicio.ServicioService;
 import es.uca.iw.eslada.servicio.ServicioType;
 import es.uca.iw.eslada.user.AuthenticatedUser;
 import es.uca.iw.eslada.user.User;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @SpringComponent
@@ -179,6 +181,7 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
         }
 
         if (contrato.getNombre() != null && !selectedServicios.isEmpty() && user.isPresent()) {
+            contrato.setFecha(LocalDateTime.now());
             contratoService.save(contrato,user.get(),selectedServicios);
             binder.setBean(null);
             getParent().ifPresent(parent -> {

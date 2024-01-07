@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ContratoService {
@@ -35,5 +36,11 @@ public class ContratoService {
         }catch (DataIntegrityViolationException e){
             return false;
         }
+    }
+
+    public String getServiciosNames(Contrato contrato) {
+        return contrato.getServicios().stream()
+                .map(Servicio::getName)
+                .collect(Collectors.joining(", "));
     }
 }

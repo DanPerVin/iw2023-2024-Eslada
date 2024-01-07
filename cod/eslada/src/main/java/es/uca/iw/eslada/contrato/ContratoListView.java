@@ -6,6 +6,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -30,75 +31,69 @@ public class ContratoListView extends VerticalLayout {
         this.contratoService = contratoService;
         this.contratoAdder = contratoAdder;
 
-
-        buildUI();
-    }
-
-    private void buildUI() {
-        H1 title = new H1("Contratos");
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidthFull();
         headerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
-        Button addButton = new Button("Contratar", VaadinIcon.PLUS.create(), e -> addContrato());
+        H1 title = new H1("Contratos");
+        Button addButton = new Button("Contratar", e -> addContrato());
 
         headerLayout.add(title, addButton);
-
         add(headerLayout);
-        //grid.addColumn(createContratoRenderer()).setHeader("Image").setAutoWidth(true).setFlexGrow(0);
-        grid.addColumn(Contrato::getNombre).setHeader("Nombre");
-        grid.addColumn(Contrato::getApellidos).setHeader("Apellidos");
-        grid.addColumn(Contrato::getNombre).setHeader("Fecha").setSortable(true);
 
-        grid.addColumn(createToggleDetailsRenderer(grid));
+        grid.addColumn(Contrato::getFecha).setHeader("Fecha de contratación").setSortable(true);
+        grid.addColumn(contrato -> contratoService.getServiciosNames(contrato)).setHeader("Servicios").setSortable(true);
 
-        grid.setDetailsVisibleOnClick(false);
-        grid.setItemDetailsRenderer(createContratoDetailsRenderer());
+        grid.addColumn(new ComponentRenderer<>(HorizontalLayout::new, (layout, contrato) -> {
+            Button editButton = new Button("Mostrar Detalles", e -> this.detallesContrato(contrato));
+            editButton.setIcon(new Icon(VaadinIcon.PLUS));
+            layout.add(editButton);
+        })).setHeader("Acciones");
 
         grid.setItems(contratoService.findAll());
 
         add(grid);
     }
 
-    private static Renderer<Contrato> createToggleDetailsRenderer(
-            Grid<Contrato> grid) {
-        return LitRenderer.<Contrato> of(
-                        "<vaadin-button theme=\"tertiary\" @click=\"${handleClick}\">Detalles</vaadin-button>")
-                .withFunction("handleClick",
-                        contrato -> grid.setDetailsVisible(contrato,
-                                !grid.isDetailsVisible(contrato)));
-    }
+    private void detallesContrato(Contrato contrato) {
+        Dialog dialog = new Dialog();
 
-    private static ComponentRenderer<ContratoDetailsFormLayout, Contrato> createContratoDetailsRenderer() {
-        return new ComponentRenderer<>(ContratoDetailsFormLayout::new,
-                ContratoDetailsFormLayout::setContrato);
-    }
+        H2 headline = new H2("Detalles del Contrato");
+        FormLayout formLayout = new FormLayout();
 
-    private static class ContratoDetailsFormLayout extends FormLayout {
-        private final TextField emailField = new TextField("Email");
-        private final TextField dniField = new TextField("D.N.I.");
-        private final TextField direccionField = new TextField("Dirección");
-        private final TextField ibanField = new TextField("Cuenta Bancaria");
+        TextField nombreField = new TextField("Nombre");
+        TextField apellidosField = new TextField("Apellidos");
+        TextField emailField = new TextField("Email");
+        TextField dniField = new TextField("DNI");
+        TextField direccionField = new TextField("Dirección");
+        TextField ibanField = new TextField("IBAN");
+        TextField fechaField = new TextField("Fecha");
+        TextField serviciosField = new TextField("Servicios", contratoService.getServiciosNames(contrato));
 
-        public ContratoDetailsFormLayout() {
-            Stream.of(emailField, dniField, direccionField, ibanField).forEach(field -> {
-                field.setReadOnly(true);
-                add(field);
-            });
+        nombreField.setValue(contrato.getNombre());
+        apellidosField.setValue(contrato.getApellidos());
+        emailField.setValue(contrato.getEmail());
+        dniField.setValue(contrato.getDni());
+        direccionField.setValue(contrato.getDireccion());
+        ibanField.setValue(contrato.getIban());
+        fechaField.setValue(contrato.getFecha().toString());
 
-            setResponsiveSteps(new ResponsiveStep("0", 3));
-            setColspan(emailField, 3);
-            setColspan(dniField, 3);
-            setColspan(direccionField, 3);
-            setColspan(ibanField, 3);
-        }
+        nombreField.setReadOnly(true);
+        apellidosField.setReadOnly(true);
+        emailField.setReadOnly(true);
+        dniField.setReadOnly(true);
+        direccionField.setReadOnly(true);
+        ibanField.setReadOnly(true);
+        fechaField.setReadOnly(true);
 
-        public void setContrato(Contrato contrato) {
-            emailField.setValue(contrato.getEmail());
-            dniField.setValue(contrato.getDni());
-            direccionField.setValue(contrato.getDireccion());
-            ibanField.setValue(contrato.getIban());
-        }
+        formLayout.add(nombreField, apellidosField, emailField, dniField, direccionField, ibanField, fechaField, serviciosField);
+
+        Button closeButton = new Button("Cerrar", e -> dialog.close());
+
+        dialog.add(headline, formLayout, closeButton);
+        dialog.open();
+
+
     }
 
     private void addContrato() {
@@ -121,5 +116,6 @@ public class ContratoListView extends VerticalLayout {
             dialog.close();
         });
     }
+
 
 }
