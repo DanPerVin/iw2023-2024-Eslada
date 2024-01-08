@@ -77,4 +77,20 @@ public class ApiService {
         return restTemplate.exchange(url.toString(), HttpMethod.GET, entity, new ParameterizedTypeReference<List<DataUsageRecord>>(){});
     }
 
+    public ResponseEntity<List<CallRecord>> getCallRecord(String id, String startDate, String endDate) {
+        StringBuilder url = new StringBuilder("http://omr-simulator.us-east-1.elasticbeanstalk.com/")
+                .append(id)
+                .append("/callrecords?carrier=eslada");
+
+        if (startDate != null && endDate != null) {
+            url.append("&startDate=").append(startDate).append("&endDate=").append(endDate);
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "application/hal+json");
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+
+        return restTemplate.exchange(url.toString(), HttpMethod.GET, entity, new ParameterizedTypeReference<List<CallRecord>>(){});
+    }
+
 }
