@@ -48,6 +48,9 @@ public class ApiView extends VerticalLayout {
 
 
         add(new H4("EL resultado es : "));
+
+        grid.setColumns("carrier","id","name","surname", "phoneNumber");
+
         grid.addColumn(new ComponentRenderer<>(HorizontalLayout::new, (layout, line) -> {
             Button editButton = new Button("Edit", e -> this.editLine(line));
             editButton.setIcon(new Icon(VaadinIcon.EDIT));
@@ -114,6 +117,7 @@ public class ApiView extends VerticalLayout {
     private void fetchData() {
         ResponseEntity<List<CustomerLine>> response = apiService.getInfo();
         List<CustomerLine> customerLines = response.getBody();
+
         grid.setItems(customerLines);
     }
 
