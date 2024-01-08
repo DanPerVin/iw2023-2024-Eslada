@@ -29,12 +29,15 @@ public class ApiView extends VerticalLayout {
 
     private final LineaEditor lineaEditor;
 
+    private final LineaDetailer lineaDetailer;
+
     private final Grid<CustomerLine> grid = new Grid<>(CustomerLine.class);
-    public ApiView(ApiService apiService, LineaAdder lineaAdder, LineaEditor lineaEditor){
+    public ApiView(ApiService apiService, LineaAdder lineaAdder, LineaEditor lineaEditor, LineaDetailer lineaDetailer){
         this.apiService =  apiService;
         this.lineaAdder = lineaAdder;
         this.lineaEditor = lineaEditor;
-        //TODO: crear boton de nuevo custommerline en lugar de postinfo
+        this.lineaDetailer = lineaDetailer;
+
 
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidthFull();
@@ -52,18 +55,47 @@ public class ApiView extends VerticalLayout {
         grid.setColumns("carrier","id","name","surname", "phoneNumber");
 
         grid.addColumn(new ComponentRenderer<>(HorizontalLayout::new, (layout, line) -> {
-            Button editButton = new Button("Edit", e -> this.editLine(line));
+            Button editButton = new Button("Editar", e -> this.editLine(line));
             editButton.setIcon(new Icon(VaadinIcon.EDIT));
             layout.add(editButton);
 
-            Button deleteButton = new Button("Delete", e -> this.deleteLine(line));
+            Button deleteButton = new Button("Borrar", e -> this.deleteLine(line));
             deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
             layout.add(deleteButton);
+
+            Button detailsButton = new Button("Detalles", e -> this.detailsLine(line));
+            detailsButton.setIcon(new Icon(VaadinIcon.PLUS));
+            layout.add(detailsButton);
         })).setHeader("Acciones");
+
         fetchData();
 
 
         add(grid);
+    }
+
+    private void detailsLine(CustomerLine line) {
+        lineaDetailer.setLine(line);
+        lineaDetailer.setCallback(() -> {
+            fetchData();
+        });
+
+        Dialog dialog = new Dialog();
+        H2 headline = new H2("Detalles de Linea");
+        dialog.add(headline);
+        headline.getElement().getClassList().add("draggable");
+
+        dialog.add(lineaDetailer);
+
+        dialog.setDraggable(true);
+        dialog.setResizable(true);
+
+        dialog.open();
+        dialog.addDialogCloseActionListener(e-> {
+            lineaDetailer.clear();
+            dialog.close();
+        });
+
     }
 
     private void deleteLine(CustomerLine line) {
