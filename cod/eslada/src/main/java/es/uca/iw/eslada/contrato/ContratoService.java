@@ -38,6 +38,16 @@ public class ContratoService {
         }
     }
 
+    public boolean edit(Contrato contrato, Collection<Servicio> servicios){
+        try{
+            contrato.setServicios(servicios);
+            contratoRepository.save(contrato);
+            return true;
+        }catch (DataIntegrityViolationException e){
+            return false;
+        }
+    }
+
     public String getServiciosNames(Contrato contrato) {
         return contrato.getServicios().stream()
                 .map(Servicio::getName)
