@@ -12,6 +12,7 @@
     <properties>
         <java.version>17</java.version>
         <vaadin.version>24.2.1</vaadin.version>
+        <frontend.productionMode>true</frontend.productionMode>
     </properties>
 
     <parent>
@@ -65,6 +66,11 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>8.2.0</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>3.1.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
