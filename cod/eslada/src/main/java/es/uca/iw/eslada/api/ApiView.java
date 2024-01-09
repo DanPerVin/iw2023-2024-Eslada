@@ -113,6 +113,23 @@ public class ApiView extends VerticalLayout {
 //            fetchData();
 //        }
 //        searchBar.clear();
+        String phoneNumber = searchBar.getValue();
+        if (!phoneNumber.isEmpty()) {
+            ResponseEntity<CustomerLine> response = apiService.searchByPhoneNumber(phoneNumber);
+            if (response.getBody() != null) {
+                Linea linea = lineaService.findByLine(response.getBody().getId());
+                CustomerLine line = response.getBody();
+                CustomerLineWrapper wrapper = new CustomerLineWrapper();
+                wrapper.setLinea(linea);
+                wrapper.setCustomerLine(line);
+                grid.setItems(Arrays.asList(wrapper));
+            } else {
+                Notification.show("No se encuentra linea con numero de tlf: " + phoneNumber, 3000, Notification.Position.MIDDLE);
+            }
+        } else {
+            fetchData();
+        }
+        searchBar.clear();
     }
 
 

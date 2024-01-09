@@ -30,4 +30,8 @@ public class LineaService {
     public List<Linea> findAll(){
         return this.lineaRepository.findAll();
     }
+
+    public  Linea findByLine(String line){
+        return this.lineaRepository.findByLineIs(line);
+    }
 }

@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface LineaRepository extends JpaRepository<Linea, UUID> {
     void deleteByLineIs(String line);
+    Linea findByLineIs(String line);
 }
