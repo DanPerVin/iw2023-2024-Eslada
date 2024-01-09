@@ -16,6 +16,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import es.uca.iw.eslada.main.MainLayout;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
@@ -23,11 +25,11 @@ import org.springframework.web.client.ResourceAccessException;
 import java.util.Arrays;
 import java.util.List;
 
-@Route("api")
-@AnonymousAllowed
+@Route(value = "api", layout = MainLayout.class)
+@RolesAllowed("ROLE_ADMIN")
 public class ApiView extends VerticalLayout {
     //TODO: BORRAR PAGINA DE PRUEBAS DE API
-    //TODO: BARRA DE SEARCH BAR CON /PHONENUMBER.
+
     private final ApiService apiService;
     private final LineaAdder lineaAdder;
 
