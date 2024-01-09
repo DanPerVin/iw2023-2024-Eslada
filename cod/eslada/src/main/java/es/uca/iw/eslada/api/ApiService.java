@@ -4,11 +4,9 @@ import elemental.json.Json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -92,5 +90,21 @@ public class ApiService {
 
         return restTemplate.exchange(url.toString(), HttpMethod.GET, entity, new ParameterizedTypeReference<List<CallRecord>>(){});
     }
+
+    public ResponseEntity<CustomerLine> searchByPhoneNumber(String phoneNumber) {
+        String url = "http://omr-simulator.us-east-1.elasticbeanstalk.com/search/phoneNumber/" + phoneNumber + "?carrier=eslada";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "application/hal+json");
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+
+        try {
+            ResponseEntity<CustomerLine> response = restTemplate.exchange(url, HttpMethod.GET, entity, CustomerLine.class);
+            return response;
+        } catch (HttpClientErrorException.NotFound ex) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 
 }

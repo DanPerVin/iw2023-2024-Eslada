@@ -12,24 +12,32 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.ResourceAccessException;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Route("api")
 @AnonymousAllowed
 public class ApiView extends VerticalLayout {
     //TODO: BORRAR PAGINA DE PRUEBAS DE API
-
+    //TODO: BARRA DE SEARCH BAR CON /PHONENUMBER.
     private final ApiService apiService;
     private final LineaAdder lineaAdder;
 
     private final LineaEditor lineaEditor;
 
     private final LineaDetailer lineaDetailer;
+
+    private final TextField searchBar;
+
+    private final Button searchButton;
 
     private final Grid<CustomerLine> grid = new Grid<>(CustomerLine.class);
     public ApiView(ApiService apiService, LineaAdder lineaAdder, LineaEditor lineaEditor, LineaDetailer lineaDetailer){
@@ -48,8 +56,14 @@ public class ApiView extends VerticalLayout {
         headerLayout.add(title, addButton);
         add(headerLayout);
 
+        HorizontalLayout searchFunction = new HorizontalLayout();
+        this.searchBar = new TextField();
+        this.searchBar.setPlaceholder("Buscar Número de tlf");
+        this.searchBar.setClearButtonVisible(true);
+        this.searchButton = new Button(new Icon(VaadinIcon.SEARCH), e -> searchNumber());
+        searchFunction.add(searchBar,searchButton);
 
-
+        add(searchFunction);
         add(new H4("EL resultado es : "));
 
         grid.setColumns("carrier","id","name","surname", "phoneNumber");
@@ -73,6 +87,23 @@ public class ApiView extends VerticalLayout {
 
         add(grid);
     }
+
+    private void searchNumber() {
+        String phoneNumber = searchBar.getValue();
+        if (!phoneNumber.isEmpty()) {
+            ResponseEntity<CustomerLine> response = apiService.searchByPhoneNumber(phoneNumber);
+            if (response.getBody() != null) {
+                grid.setItems(Arrays.asList(response.getBody()));
+            } else {
+                Notification.show("No se encuentra linea con numero de tlf: " + phoneNumber, 3000, Notification.Position.MIDDLE);
+            }
+        } else {
+            fetchData();
+        }
+        searchBar.clear();
+    }
+
+
 
     private void detailsLine(CustomerLine line) {
         lineaDetailer.setLine(line);
