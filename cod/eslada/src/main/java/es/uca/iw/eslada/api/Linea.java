@@ -13,8 +13,8 @@ public class Linea {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(length = 100)
-    private String id_line;
+    @Column
+    private String line;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -40,12 +40,12 @@ public class Linea {
         this.id = id;
     }
 
-    public String getId_line() {
-        return id_line;
+    public String getLine() {
+        return line;
     }
 
-    public void setId_line(String id_line) {
-        this.id_line = id_line;
+    public void setLine(String line) {
+        this.line = line;
     }
 
     public User getUser() {
@@ -79,4 +79,6 @@ public class Linea {
     public void setSharedDataLines(Set<Linea> sharedDataLines) {
         this.sharedDataLines = sharedDataLines;
     }
+
+
 }

@@ -22,15 +22,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Route(value = "api", layout = MainLayout.class)
-@RolesAllowed("ROLE_ADMIN")
+@AnonymousAllowed
 public class ApiView extends VerticalLayout {
     //TODO: BORRAR PAGINA DE PRUEBAS DE API
 
     private final ApiService apiService;
+    private final LineaService lineaService;
     private final LineaAdder lineaAdder;
 
     private final LineaEditor lineaEditor;
@@ -41,12 +43,14 @@ public class ApiView extends VerticalLayout {
 
     private final Button searchButton;
 
-    private final Grid<CustomerLine> grid = new Grid<>(CustomerLine.class);
-    public ApiView(ApiService apiService, LineaAdder lineaAdder, LineaEditor lineaEditor, LineaDetailer lineaDetailer){
+    private final Grid<CustomerLineWrapper> grid = new Grid<>(CustomerLineWrapper.class);
+    public ApiView(ApiService apiService, LineaService lineaService, LineaAdder lineaAdder, LineaEditor lineaEditor, LineaDetailer lineaDetailer){
         this.apiService =  apiService;
+        this.lineaService = lineaService;
         this.lineaAdder = lineaAdder;
         this.lineaEditor = lineaEditor;
         this.lineaDetailer = lineaDetailer;
+        grid.removeAllColumns();
 
 
         HorizontalLayout headerLayout = new HorizontalLayout();
@@ -68,18 +72,24 @@ public class ApiView extends VerticalLayout {
         add(searchFunction);
         add(new H4("EL resultado es : "));
 
-        grid.setColumns("carrier","id","name","surname", "phoneNumber");
+//        grid.setColumns("carrier","id","name","surname", "phoneNumber");
+        grid.addColumn(wrapper -> wrapper.getCustomerLine().getCarrier()).setHeader("Carrier");
+        grid.addColumn(wrapper -> wrapper.getLinea().getUser().getUsername()).setHeader("Username");
+        grid.addColumn(wrapper -> wrapper.getCustomerLine().getId()).setHeader("Id");
+        grid.addColumn(wrapper -> wrapper.getCustomerLine().getName()).setHeader("Nombre");
+        grid.addColumn(wrapper -> wrapper.getCustomerLine().getSurname()).setHeader("Apellidos");
+        grid.addColumn(wrapper -> wrapper.getCustomerLine().getPhoneNumber()).setHeader("Numero de tlf.");
 
-        grid.addColumn(new ComponentRenderer<>(HorizontalLayout::new, (layout, line) -> {
-            Button editButton = new Button("Editar", e -> this.editLine(line));
-            editButton.setIcon(new Icon(VaadinIcon.EDIT));
-            layout.add(editButton);
-
-            Button deleteButton = new Button("Borrar", e -> this.deleteLine(line));
-            deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
-            layout.add(deleteButton);
-
-            Button detailsButton = new Button("Detalles", e -> this.detailsLine(line));
+        grid.addColumn(new ComponentRenderer<>(HorizontalLayout::new, (layout, wrapper) -> {
+//            Button editButton = new Button("Editar", e -> this.editLine(wrapper));
+//            editButton.setIcon(new Icon(VaadinIcon.EDIT));
+//            layout.add(editButton);
+//
+//            Button deleteButton = new Button("Borrar", e -> this.deleteLine(wrapper));
+//            deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
+//            layout.add(deleteButton);
+//
+            Button detailsButton = new Button("Detalles", e -> this.detailsLine(wrapper));
             detailsButton.setIcon(new Icon(VaadinIcon.PLUS));
             layout.add(detailsButton);
         })).setHeader("Acciones");
@@ -91,24 +101,45 @@ public class ApiView extends VerticalLayout {
     }
 
     private void searchNumber() {
-        String phoneNumber = searchBar.getValue();
-        if (!phoneNumber.isEmpty()) {
-            ResponseEntity<CustomerLine> response = apiService.searchByPhoneNumber(phoneNumber);
-            if (response.getBody() != null) {
-                grid.setItems(Arrays.asList(response.getBody()));
-            } else {
-                Notification.show("No se encuentra linea con numero de tlf: " + phoneNumber, 3000, Notification.Position.MIDDLE);
-            }
-        } else {
-            fetchData();
-        }
-        searchBar.clear();
+//        String phoneNumber = searchBar.getValue();
+//        if (!phoneNumber.isEmpty()) {
+//            ResponseEntity<CustomerLine> response = apiService.searchByPhoneNumber(phoneNumber);
+//            if (response.getBody() != null) {
+//                grid.setItems(Arrays.asList(response.getBody()));
+//            } else {
+//                Notification.show("No se encuentra linea con numero de tlf: " + phoneNumber, 3000, Notification.Position.MIDDLE);
+//            }
+//        } else {
+//            fetchData();
+//        }
+//        searchBar.clear();
     }
 
 
 
-    private void detailsLine(CustomerLine line) {
-        lineaDetailer.setLine(line);
+    private void detailsLine(CustomerLineWrapper wrapper) {
+//        lineaDetailer.setLine(line);
+//        lineaDetailer.setCallback(() -> {
+//            fetchData();
+//        });
+//
+//        Dialog dialog = new Dialog();
+//        H2 headline = new H2("Detalles de Linea");
+//        dialog.add(headline);
+//        headline.getElement().getClassList().add("draggable");
+//
+//        dialog.add(lineaDetailer);
+//
+//        dialog.setDraggable(true);
+//        dialog.setResizable(true);
+//
+//        dialog.open();
+//        dialog.addDialogCloseActionListener(e-> {
+//            lineaDetailer.clear();
+//            dialog.close();
+//        });
+
+        lineaDetailer.setLine(wrapper.getCustomerLine());
         lineaDetailer.setCallback(() -> {
             fetchData();
         });
@@ -129,83 +160,100 @@ public class ApiView extends VerticalLayout {
             dialog.close();
         });
 
+
     }
 
     private void deleteLine(CustomerLine line) {
-        Dialog dialog = new Dialog();
-        H2 headline = new H2("Delete Line");
-        dialog.add(headline);
-        headline.getElement().getClassList().add("draggable");
-        Text message = new Text("¿ Seguro que quieres borrar la linea ?");
-        dialog.add(message);
-
-        Button cancelButton = new Button("Cancel", e -> dialog.close());
-        Button deleteButton = new Button("Delete", e -> {
-            apiService.deleteInfo(line.getId());
-            fetchData();
-            dialog.close();
-        });
-
-        deleteButton.setThemeName("error");
-        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, deleteButton);
-        dialog.add(buttonLayout);
-
-        dialog.setDraggable(true);
-        dialog.setResizable(true);
-
-        dialog.open();
+//        Dialog dialog = new Dialog();
+//        H2 headline = new H2("Delete Line");
+//        dialog.add(headline);
+//        headline.getElement().getClassList().add("draggable");
+//        Text message = new Text("¿ Seguro que quieres borrar la linea ?");
+//        dialog.add(message);
+//
+//        Button cancelButton = new Button("Cancel", e -> dialog.close());
+//        Button deleteButton = new Button("Delete", e -> {
+//            apiService.deleteInfo(line.getId());
+//            fetchData();
+//            dialog.close();
+//        });
+//
+//        deleteButton.setThemeName("error");
+//        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, deleteButton);
+//        dialog.add(buttonLayout);
+//
+//        dialog.setDraggable(true);
+//        dialog.setResizable(true);
+//
+//        dialog.open();
     }
 
     private void addLinea() {
 
-        lineaAdder.setCallback(() -> {
-            fetchData();
-        });
-
-        Dialog dialog = new Dialog();
-        H2 headline = new H2("Añadir Linea");
-        dialog.add(headline);
-        headline.getElement().getClassList().add("draggable");
-
-        dialog.add(lineaAdder);
-
-        dialog.setDraggable(true);
-        dialog.setResizable(true);
-
-        dialog.open();
-        dialog.addDialogCloseActionListener(e-> {
-            fetchData();
-            dialog.close();
-        });
+//        lineaAdder.setCallback(() -> {
+//            fetchData();
+//        });
+//
+//        Dialog dialog = new Dialog();
+//        H2 headline = new H2("Añadir Linea");
+//        dialog.add(headline);
+//        headline.getElement().getClassList().add("draggable");
+//
+//        dialog.add(lineaAdder);
+//
+//        dialog.setDraggable(true);
+//        dialog.setResizable(true);
+//
+//        dialog.open();
+//        dialog.addDialogCloseActionListener(e-> {
+//            fetchData();
+//            dialog.close();
+//        });
     }
 
     private void fetchData() {
-        ResponseEntity<List<CustomerLine>> response = apiService.getInfo();
-        List<CustomerLine> customerLines = response.getBody();
+//        ResponseEntity<List<CustomerLine>> response = apiService.getInfo();
+//        List<CustomerLine> customerLines = response.getBody();
+//
+//        grid.setItems(customerLines);
 
-        grid.setItems(customerLines);
+        List<Linea> lineas = lineaService.findAll();
+        List<CustomerLineWrapper> wrappers = new ArrayList<>();
+
+        for(Linea linea : lineas){
+            CustomerLineWrapper wrapper = new CustomerLineWrapper();
+            ResponseEntity<CustomerLine> customerLineResponseEntity= apiService.getLine(linea.getLine());
+            if(customerLineResponseEntity.getBody() != null){
+                wrapper.setLinea(linea);
+                wrapper.setCustomerLine(customerLineResponseEntity.getBody());
+                wrappers.add(wrapper);
+            }
+        }
+
+        grid.setItems(wrappers);
+
     }
 
     private void editLine(CustomerLine line) {
-        lineaEditor.editLine(line);
-        lineaEditor.setCallback(() -> {
-            fetchData();
-        });
-
-        Dialog dialog = new Dialog();
-        H2 headline = new H2("Editar Linea");
-        dialog.add(headline);
-        headline.getElement().getClassList().add("draggable");
-
-        dialog.add(lineaEditor);
-
-        dialog.setDraggable(true);
-        dialog.setResizable(true);
-
-        dialog.open();
-        dialog.addDialogCloseActionListener(e-> {
-            fetchData();
-            dialog.close();
-        });
+//        lineaEditor.editLine(line);
+//        lineaEditor.setCallback(() -> {
+//            fetchData();
+//        });
+//
+//        Dialog dialog = new Dialog();
+//        H2 headline = new H2("Editar Linea");
+//        dialog.add(headline);
+//        headline.getElement().getClassList().add("draggable");
+//
+//        dialog.add(lineaEditor);
+//
+//        dialog.setDraggable(true);
+//        dialog.setResizable(true);
+//
+//        dialog.open();
+//        dialog.addDialogCloseActionListener(e-> {
+//            fetchData();
+//            dialog.close();
+//        });
     }
 }

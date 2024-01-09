@@ -41,7 +41,13 @@ public class ApiService {
         HttpEntity<CustomerLineRequest> entity = new HttpEntity<>(request, headers);
         return restTemplate.postForEntity(url, entity, CustomerLine.class);
     }
-
+    public ResponseEntity<CustomerLine> getLine(String id){
+        String url = "http://omr-simulator.us-east-1.elasticbeanstalk.com/" + id + "?carrier=eslada";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "application/hal+json");
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+        return restTemplate.exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<CustomerLine>(){});
+    }
     public ResponseEntity<CustomerLine> patchInfo(String id, CustomerLineRequest request) {
         String url = "http://omr-simulator.us-east-1.elasticbeanstalk.com/" + id;
         HttpHeaders headers = new HttpHeaders();
