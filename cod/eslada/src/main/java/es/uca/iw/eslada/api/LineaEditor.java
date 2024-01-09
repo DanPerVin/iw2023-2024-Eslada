@@ -2,7 +2,9 @@ package es.uca.iw.eslada.api;
 
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -20,6 +22,14 @@ public class LineaEditor extends VerticalLayout implements KeyNotifier {
 
     private final ApiService apiService;
 
+    private final LineaService lineaService;
+
+    private final TextField username;
+
+    private final Checkbox roaming;
+
+    private final Checkbox block;
+
     private final TextField name;
 
     private final TextField surname;
@@ -33,10 +43,22 @@ public class LineaEditor extends VerticalLayout implements KeyNotifier {
 
     private CustomerLine line;
 
+    private Linea linea;
+
     private BeanValidationBinder<CustomerLineRequest> binder;
 
-    public LineaEditor(ApiService apiService){
+    public LineaEditor(ApiService apiService, LineaService lineaService){
         this.apiService = apiService;
+        this.lineaService = lineaService;
+
+        this.username = new TextField("User");
+        this.username.setReadOnly(true);
+
+        H4 opciones = new H4("Opciones especiales: ");
+        HorizontalLayout checboxes = new HorizontalLayout();
+        this.roaming = new Checkbox("Roaming");
+        this.block = new Checkbox("Bloqueo de Numeros especiales");
+        checboxes.add(roaming,block);
 
         this.name = new TextField("Nombre");
         this.surname = new TextField("Apellidos");
@@ -49,7 +71,7 @@ public class LineaEditor extends VerticalLayout implements KeyNotifier {
         binder.bindInstanceFields(this);
 
         HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, cancelButton);
-        add(name,surname,phoneNumber,buttonLayout);
+        add(username,opciones,checboxes,name,surname,phoneNumber,buttonLayout);
 
     }
     public void setCallback(Runnable callback) {
@@ -64,6 +86,17 @@ public class LineaEditor extends VerticalLayout implements KeyNotifier {
         });
     }
 
+    public void editWrapper(CustomerLineWrapper wrapper){
+        editLinea(wrapper.getLinea());
+        editLine(wrapper.getCustomerLine());
+    }
+
+    public void editLinea(Linea linea){
+        this.linea = linea;
+        this.username.setValue(linea.getUser().getUsername());
+        this.roaming.setValue(linea.getRoaming());
+        this.block.setValue(linea.getBlock());
+    }
     public void editLine(CustomerLine line){
         this.line = line;
         this.name.setValue(line.getName());
@@ -77,6 +110,9 @@ public class LineaEditor extends VerticalLayout implements KeyNotifier {
             request.setCarrier("eslada");
             ResponseEntity<CustomerLine> response = apiService.patchInfo(line.getId(),request);
             if (response.getStatusCode().is2xxSuccessful()) {
+                linea.setRoaming(roaming.getValue());
+                linea.setBlock(block.getValue());
+                lineaService.saveLinea(linea);
                 Notification notification = Notification.show("Actualizado Correctamente");
                 notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 getParent().ifPresent(parent -> {

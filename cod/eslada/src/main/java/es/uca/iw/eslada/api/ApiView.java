@@ -20,6 +20,7 @@ import es.uca.iw.eslada.main.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.util.ArrayList;
@@ -73,26 +74,26 @@ public class ApiView extends VerticalLayout {
         add(new H4("EL resultado es : "));
 
 //        grid.setColumns("carrier","id","name","surname", "phoneNumber");
-        grid.addColumn(wrapper -> wrapper.getCustomerLine().getCarrier()).setHeader("Carrier");
-        grid.addColumn(wrapper -> wrapper.getLinea().getUser().getUsername()).setHeader("Username");
-        grid.addColumn(wrapper -> wrapper.getCustomerLine().getId()).setHeader("Id");
-        grid.addColumn(wrapper -> wrapper.getCustomerLine().getName()).setHeader("Nombre");
-        grid.addColumn(wrapper -> wrapper.getCustomerLine().getSurname()).setHeader("Apellidos");
-        grid.addColumn(wrapper -> wrapper.getCustomerLine().getPhoneNumber()).setHeader("Numero de tlf.");
+        grid.addColumn(wrapper -> wrapper.getCustomerLine().getCarrier()).setHeader("Carrier").setResizable(true);
+        grid.addColumn(wrapper -> wrapper.getLinea().getUser().getUsername()).setHeader("Username").setResizable(true);
+        grid.addColumn(wrapper -> wrapper.getCustomerLine().getId()).setHeader("Id").setResizable(true);
+        grid.addColumn(wrapper -> wrapper.getCustomerLine().getName()).setHeader("Nombre").setResizable(true);
+        grid.addColumn(wrapper -> wrapper.getCustomerLine().getSurname()).setHeader("Apellidos").setResizable(true);
+        grid.addColumn(wrapper -> wrapper.getCustomerLine().getPhoneNumber()).setHeader("Numero de tlf.").setResizable(true);
 
         grid.addColumn(new ComponentRenderer<>(HorizontalLayout::new, (layout, wrapper) -> {
-//            Button editButton = new Button("Editar", e -> this.editLine(wrapper));
-//            editButton.setIcon(new Icon(VaadinIcon.EDIT));
-//            layout.add(editButton);
-//
-//            Button deleteButton = new Button("Borrar", e -> this.deleteLine(wrapper));
-//            deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
-//            layout.add(deleteButton);
-//
+            Button editButton = new Button("Editar", e -> this.editLine(wrapper));
+            editButton.setIcon(new Icon(VaadinIcon.EDIT));
+            layout.add(editButton);
+
+            Button deleteButton = new Button("Borrar", e -> this.deleteLine(wrapper));
+            deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
+            layout.add(deleteButton);
+
             Button detailsButton = new Button("Detalles", e -> this.detailsLine(wrapper));
             detailsButton.setIcon(new Icon(VaadinIcon.PLUS));
             layout.add(detailsButton);
-        })).setHeader("Acciones");
+        })).setHeader("Acciones").setResizable(true);
 
         fetchData();
 
@@ -180,7 +181,7 @@ public class ApiView extends VerticalLayout {
 
     }
 
-    private void deleteLine(CustomerLine line) {
+    private void deleteLine(CustomerLineWrapper wrapper) {
 //        Dialog dialog = new Dialog();
 //        H2 headline = new H2("Delete Line");
 //        dialog.add(headline);
@@ -203,29 +204,53 @@ public class ApiView extends VerticalLayout {
 //        dialog.setResizable(true);
 //
 //        dialog.open();
+
+        Dialog dialog = new Dialog();
+        H2 headline = new H2("Delete Line");
+        dialog.add(headline);
+        headline.getElement().getClassList().add("draggable");
+        Text message = new Text("¿ Seguro que quieres borrar la linea ?");
+        dialog.add(message);
+
+        Button cancelButton = new Button("Cancel", e -> dialog.close());
+        Button deleteButton = new Button("Delete", e -> {
+            lineaService.deleteLinea(wrapper.getCustomerLine());
+            fetchData();
+            dialog.close();
+        });
+
+        deleteButton.setThemeName("error");
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, deleteButton);
+        dialog.add(buttonLayout);
+
+        dialog.setDraggable(true);
+        dialog.setResizable(true);
+
+        dialog.open();
     }
 
     private void addLinea() {
 
-//        lineaAdder.setCallback(() -> {
-//            fetchData();
-//        });
-//
-//        Dialog dialog = new Dialog();
-//        H2 headline = new H2("Añadir Linea");
-//        dialog.add(headline);
-//        headline.getElement().getClassList().add("draggable");
-//
-//        dialog.add(lineaAdder);
-//
-//        dialog.setDraggable(true);
-//        dialog.setResizable(true);
-//
-//        dialog.open();
-//        dialog.addDialogCloseActionListener(e-> {
-//            fetchData();
-//            dialog.close();
-//        });
+        lineaAdder.setCallback(() -> {
+            fetchData();
+        });
+
+        Dialog dialog = new Dialog();
+        H2 headline = new H2("Añadir Linea");
+        dialog.add(headline);
+        headline.getElement().getClassList().add("draggable");
+
+        dialog.add(lineaAdder);
+
+        dialog.setDraggable(true);
+        dialog.setResizable(true);
+
+        dialog.open();
+        dialog.addDialogCloseActionListener(e-> {
+            lineaAdder.clear();
+            fetchData();
+            dialog.close();
+        });
     }
 
     private void fetchData() {
@@ -251,7 +276,7 @@ public class ApiView extends VerticalLayout {
 
     }
 
-    private void editLine(CustomerLine line) {
+    private void editLine(CustomerLineWrapper wrapper) {
 //        lineaEditor.editLine(line);
 //        lineaEditor.setCallback(() -> {
 //            fetchData();
@@ -272,5 +297,26 @@ public class ApiView extends VerticalLayout {
 //            fetchData();
 //            dialog.close();
 //        });
+
+        lineaEditor.editWrapper(wrapper);
+        lineaEditor.setCallback(() -> {
+            fetchData();
+        });
+
+        Dialog dialog = new Dialog();
+        H2 headline = new H2("Editar Linea");
+        dialog.add(headline);
+        headline.getElement().getClassList().add("draggable");
+
+        dialog.add(lineaEditor);
+
+        dialog.setDraggable(true);
+        dialog.setResizable(true);
+
+        dialog.open();
+        dialog.addDialogCloseActionListener(e-> {
+            fetchData();
+            dialog.close();
+        });
     }
 }
