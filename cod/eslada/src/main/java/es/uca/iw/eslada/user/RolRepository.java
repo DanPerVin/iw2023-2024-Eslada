@@ -6,4 +6,6 @@ import java.util.UUID;
 
 public interface RolRepository extends JpaRepository<Rol, UUID> {
 
+    Rol findFirstByName(String name);
+
 }

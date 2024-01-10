@@ -40,4 +40,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public Rol findRolByName(String name){
+        return  this.rolRepository.findFirstByName(name);
+    }
+
 }
