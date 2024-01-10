@@ -91,7 +91,7 @@ public class MainLayout extends AppLayout {
         if (accessChecker.hasAccess(UserApiView.class)) {
             nav.addItem(new SideNavItem("Lineas telefonicas", UserApiView.class, VaadinIcon.PHONE.create()));
         }
-        
+
 
         if(accessChecker.hasAccess(ConsultationView.class)){
             nav.addItem(new SideNavItem("Consultas", ConsultationView.class,VaadinIcon.AIRPLANE.create()));
@@ -102,5 +102,5 @@ public class MainLayout extends AppLayout {
         }
 
         return nav;
-    }//TODO: Revisar permisos de tarifas
+    }
 }
