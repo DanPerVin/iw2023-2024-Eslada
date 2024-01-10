@@ -27,9 +27,7 @@ vaadin-text-field.bordered::part(input-field) {
   /*padding: 20 px;*/
   background-color: #2c3d52;
   align-items: center;
-
-  width: 60%;
-  height: 37%;
+  flex-basis: fit-content;
 }
 
 /* On mouse-over, add a deeper shadow */
