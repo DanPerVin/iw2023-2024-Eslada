@@ -1,6 +1,10 @@
 package es.uca.iw.eslada.register;
 
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -23,7 +27,6 @@ import javax.swing.*;
 import java.awt.*;
 
 @Route(value = "register")
-@PageTitle("ESLADA-REGISTER")
 @AnonymousAllowed
 public class UserRegisterView extends VerticalLayout {
     private final UserService userService;
@@ -33,10 +36,13 @@ public class UserRegisterView extends VerticalLayout {
     private final EmailField email = new EmailField();
     private final PasswordField password= new PasswordField();
     private final PasswordField password2 = new PasswordField();
-    private final Button register = new Button("Register");
+    private final Button register = new Button("Registrarse");
     private final BeanValidationBinder<User> binder;
     public UserRegisterView(UserService userService){
         this.userService = userService;
+
+        add(new H1("Regístrate como usuario"));
+        add(new H2("Introduce tus datos para empezar a formar parte de Eslada:"));
 
         username.setId("username");
         name.setId("name");
@@ -47,22 +53,22 @@ public class UserRegisterView extends VerticalLayout {
         dni.setPattern("^[0-9]{8}[A-Za-z]$");
         dni.setMaxLength(9);
         dni.setMinLength(9);
-        dni.setHelperText("Format: 58723465C");
+        dni.setHelperText("Formato: 58723465C");
 
         password.setMinLength(6);
         password.setMaxLength(26);
-        password.setHelperText("6-26 characters and numbers");
+        password.setHelperText("6-26 letras y numeros");
 
         password2.setMinLength(6);
         password2.setMaxLength(26);
-        password2.setHelperText("Passwords must coincide");
+        password2.setHelperText("Las contraseñas deben coincidir");
 
         username.setLabel("Username");
-        name.setLabel("Name");
+        name.setLabel("Nombre");
         dni.setLabel("DNI");
         email.setLabel("e-mail");
-        password.setLabel("Password");
-        password2.setLabel("Repeat Password");
+        password.setLabel("Contraseña");
+        password2.setLabel("Repite tu contraseña");
 
 
 
@@ -74,6 +80,8 @@ public class UserRegisterView extends VerticalLayout {
         binder.bindInstanceFields(this);
 
         binder.setBean(new User());
+
+        this.setAlignItems(Alignment.CENTER);
     }
 
     private void onRegisterButtonClick() {

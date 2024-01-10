@@ -1,5 +1,6 @@
 package es.uca.iw.eslada.register;
 
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -38,6 +39,8 @@ public class RegisterView extends VerticalLayout {
     private final BeanValidationBinder<User> binder;
     public RegisterView(UserService userService){
         this.userService = userService;
+
+        add(new H2("Registrar nuevo usuario"));
 
         username.setId("username");
         name.setId("name");
