@@ -15,6 +15,8 @@ import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import es.uca.iw.eslada.api.ApiView;
 import es.uca.iw.eslada.api.UserApiView;
+import es.uca.iw.eslada.consultas.ConsultationView;
+import es.uca.iw.eslada.servicio.ServicioView;
 import es.uca.iw.eslada.contrato.ContratoEditView;
 import es.uca.iw.eslada.contrato.ContratoListView;
 import es.uca.iw.eslada.servicio.ServicioTypeView;
@@ -87,6 +89,14 @@ public class MainLayout extends AppLayout {
         }
         if (accessChecker.hasAccess(UserApiView.class)) {
             nav.addItem(new SideNavItem("Lineas telefonicas", UserApiView.class, VaadinIcon.PHONE.create()));
+        }
+
+        if(accessChecker.hasAccess(ServicioView.class)){
+            nav.addItem(new SideNavItem("Servicios List", ServicioView.class,VaadinIcon.ANCHOR.create()));
+        }
+
+        if(accessChecker.hasAccess(ConsultationView.class)){
+            nav.addItem(new SideNavItem("Consultas", ConsultationView.class,VaadinIcon.AIRPLANE.create()));
         }
 
         return nav;
