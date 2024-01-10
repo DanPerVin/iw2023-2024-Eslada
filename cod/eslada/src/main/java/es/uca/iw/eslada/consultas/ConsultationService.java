@@ -10,8 +10,6 @@ import java.util.UUID;
 @Service
 public class ConsultationService {
 
-    //TODO: Crear las operaciones entre repositorio y servicio
-
     private MessageRepository messageRepository;
     private ConsultationRepository consultationRepository;
 

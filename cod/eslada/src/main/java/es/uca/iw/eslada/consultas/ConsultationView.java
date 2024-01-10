@@ -124,13 +124,15 @@ public class ConsultationView extends VerticalLayout {
         if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("USER"))
             grid.setItems(consultationService.findByUser(authenticatedUser.get().get()));
 
+        grid.setWidthFull();
+        //grid.setHeightFull();
+
         add(grid);
 
     }
 
     //Funcion para crear consulta
     private void addConsultation() {
-        //TODO: Añadir consulta
         Dialog newConsultationDiag = new Dialog();
         H2 headline = new H2("Nueva consulta");
         newConsultationDiag.add(headline);

@@ -2,11 +2,13 @@ package es.uca.iw.eslada.consultas;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
@@ -50,6 +52,9 @@ public class MessageView extends VerticalLayout implements HasUrlParameter<Strin
         this.messageService = messageService;
         setWidthFull();
         setHeightFull();
+        messageList.setWidthFull();
+        messageList.setHeightFull();
+
     }
 
     @Override
@@ -63,12 +68,20 @@ public class MessageView extends VerticalLayout implements HasUrlParameter<Strin
         add(C1(), C2(), C3());
     }
 
+    //15% barra superior
     private HorizontalLayout C1() {
         HorizontalLayout C1 = new HorizontalLayout();
         C1.setWidthFull();
+        C1.setHeight(10, Unit.PERCENTAGE);
         C1.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
-        C1.add(new H1("Consulta: " + consultation.get().getId().toString()));
+        HorizontalLayout consultationData = new HorizontalLayout(new H1("Consulta: "),
+                new H6(consultation.get().getId().toString()));
+        consultationData.setVerticalComponentAlignment(Alignment.END);
+
+        consultationData.setWidthFull();
+
+        C1.add(consultationData);
 
         if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN")){
             Button closeConsultation = new Button("Cerrar", e -> closeConsultation(consultation.get()));
@@ -83,15 +96,16 @@ public class MessageView extends VerticalLayout implements HasUrlParameter<Strin
         C2.add(new H3(consultation.get().getName()));
 
 
-
         //if (!messageService.getMessagesFromConsultation(consultation.get()).isEmpty())
         for(Message msg : messageService.getMessagesFromConsultation(consultation.get())) {
             MessageListItem message = new MessageListItem(msg.getMessageString(), msg.getCreationDate().toInstant(),
-                    msg.getUser().getName());
+                    msg.getUser().getName() + " " + msg.getUser().getSurname());
             messageListItems.add(message);
         }
         messageList.setItems(messageListItems);
         C2.add(messageList);
+        C2.setHeight(80, Unit.PERCENTAGE);
+        C2.setWidthFull();
         return C2;
     }
 
@@ -102,7 +116,8 @@ public class MessageView extends VerticalLayout implements HasUrlParameter<Strin
             Date date = new Date();
 
             MessageListItem newMessage = new MessageListItem(
-                    submitEvent.getValue(), date.toInstant(), authenticatedUser.get().get().getName());
+                    submitEvent.getValue(), date.toInstant(), authenticatedUser.get().get().getName() + " " +
+                    authenticatedUser.get().get().getSurname());
             List<MessageListItem> items = new ArrayList<>(messageList.getItems());
             items.add(newMessage);
             messageList.setItems(items);
@@ -113,7 +128,11 @@ public class MessageView extends VerticalLayout implements HasUrlParameter<Strin
             msg.setCreationDate(date);
             messageService.saveMessage(msg);
         });
+        input.setWidthFull();;
         C3.add(input);
+        C3.setWidthFull();
+        C3.setHeight(10, Unit.PERCENTAGE);
+        C3.setAlignSelf(Alignment.END);
         return C3;
     }
 

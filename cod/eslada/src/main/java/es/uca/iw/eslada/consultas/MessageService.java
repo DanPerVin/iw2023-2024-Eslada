@@ -10,8 +10,6 @@ import java.util.Optional;
 @Service
 public class MessageService {
 
-    //TODO: Operaciones de mensajes
-
     private MessageRepository messageRepository;
     private ConsultationRepository consultationRepository;
 
