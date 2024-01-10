@@ -33,7 +33,6 @@ public class ContratoEditView extends VerticalLayout {
 
     public ContratoEditView(ContratoService contratoService, ContratoEditor contratoEditor) {
         this.contratoService = contratoService;
-
         this.contratoEditor = contratoEditor;
 
         HorizontalLayout headerLayout = new HorizontalLayout();
@@ -142,6 +141,7 @@ public class ContratoEditView extends VerticalLayout {
         dialog.open();
         dialog.addDialogCloseActionListener(e-> {
             grid.setItems(contratoService.findAll());
+            contratoEditor.clear();
             dialog.close();
         });
     }
