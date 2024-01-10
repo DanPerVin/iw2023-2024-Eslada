@@ -26,36 +26,24 @@ import java.util.Collection;
 public class ContratoEditView extends VerticalLayout {
 
     private final ContratoService contratoService;
-   // private final AuthenticatedUser authenticatedUser;
     private final Grid<Contrato> grid = new Grid<>(Contrato.class, false);
-    private final ContratoAdder contratoAdder;
 
     private final ContratoEditor contratoEditor;
 
-    //private Optional<User> optionalUser;
-    //private User user;
-    public ContratoEditView(/*AuthenticatedUser authenticatedUser,*/ContratoService contratoService,ContratoAdder contratoAdder, ContratoEditor contratoEditor) {
-        //this.authenticatedUser = authenticatedUser;
+
+    public ContratoEditView(ContratoService contratoService, ContratoEditor contratoEditor) {
         this.contratoService = contratoService;
-        this.contratoAdder = contratoAdder;
+
         this.contratoEditor = contratoEditor;
-
-        /*optionalUser = authenticatedUser.get();
-        if (!optionalUser.isPresent()) {
-            add(new H1("No se encuentra Loggeado."));
-            return;
-        }
-
-        user = optionalUser.get();*/
 
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidthFull();
         headerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
         H1 title = new H1("Contratos");
-        //Button addButton = new Button("Contratar", e -> addContrato());
 
-        headerLayout.add(title/*, addButton*/);
+
+        headerLayout.add(title);
         add(headerLayout);
 
         grid.addColumn(Contrato::getNombre).setHeader("Nombre").setSortable(true).setResizable(true).setAutoWidth(true).setFlexGrow(0);
@@ -128,13 +116,8 @@ public class ContratoEditView extends VerticalLayout {
         verticalLayout.add(new H4("Precio Total: "+ contratoService.getServiciosPrecio(contrato)+" €"));
 
         Button closeButton = new Button("Cerrar", e -> dialog.close());
-        //Button editButton = new Button("Edit", e -> this.editContrato(contrato));
-        //editButton.setIcon(new Icon(VaadinIcon.EDIT));
-        //Button deleteButton = new Button("Delete", e -> this.deleteContrato(contrato));
-       // deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
 
-
-        dialog.add(headline, verticalLayout, closeButton/*, editButton, deleteButton*/);
+        dialog.add(headline, verticalLayout, closeButton);
         dialog.open();
 
 
@@ -163,26 +146,7 @@ public class ContratoEditView extends VerticalLayout {
         });
     }
 
-    /*private void addContrato() {
-        contratoAdder.setCallback(() -> {
-            grid.setItems(contratoService.findAll());
-        });
-        Dialog dialog = new Dialog();
-        H2 headline = new H2("Add Contrato");
-        dialog.add(headline);
-        headline.getElement().getClassList().add("draggable");
 
-        dialog.add(contratoAdder);
-
-        dialog.setDraggable(true);
-        dialog.setResizable(true);
-
-        dialog.open();
-        dialog.addDialogCloseActionListener(e-> {
-            grid.setItems(contratoService.findAll());
-            dialog.close();
-        });
-    }*/
 
     private void deleteContrato(Contrato contrato) {
         Dialog dialog = new Dialog();
@@ -209,5 +173,5 @@ public class ContratoEditView extends VerticalLayout {
         dialog.open();
     }
 
-}//TODO: Que se vea la imagen y enlace a la ventana de la contrato
+}
 

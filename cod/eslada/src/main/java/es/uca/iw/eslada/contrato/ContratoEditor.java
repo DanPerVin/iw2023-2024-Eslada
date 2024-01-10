@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import es.uca.iw.eslada.servicio.Servicio;
@@ -25,7 +26,6 @@ import java.util.*;
 @UIScope
 public class ContratoEditor extends VerticalLayout implements KeyNotifier {
     private CheckboxGroup<Servicio> serviciosCheckboxGroup = new CheckboxGroup<>();
-    private final ContratoRepository contratoRepository;
     private TextField nombre;
     private TextField apellidos;
     private TextField email;
@@ -41,13 +41,14 @@ public class ContratoEditor extends VerticalLayout implements KeyNotifier {
     private final ContratoService contratoService;
 
     private Map<ServicioType, CheckboxGroup<Servicio>> checkboxGroups = new HashMap<>();
+
+    private Map<ServicioType, DataProvider<Servicio, ?>> dataProviders = new HashMap<>();
     private VerticalLayout serviciosSummary = new VerticalLayout();
-    private Set<Servicio> selectedServices;
+    private Set<Servicio> selectedServices= new HashSet<>();;
     private Optional<User> user = Optional.of(new User());
 
 
-    public ContratoEditor(ContratoRepository contratoRepository, ServicioService servicioService, ContratoService contratoService){
-        this.contratoRepository = contratoRepository;
+    public ContratoEditor(ServicioService servicioService, ContratoService contratoService){
         this.servicioService = servicioService;
         this.contratoService = contratoService;
 
@@ -58,11 +59,32 @@ public class ContratoEditor extends VerticalLayout implements KeyNotifier {
         this.direccion = new TextField("Direccion");
         this.iban = new TextField("Cuenta Bancaria");
         add(nombre,apellidos, dni, email, direccion, iban);
-        this.selectedServices = new HashSet<>();
+
 
         this.binder = new BeanValidationBinder<>(Contrato.class);
         binder.bindInstanceFields(this);
+
+        for (ServicioType servicioType : servicioService.findAllTypes()) {
+            CheckboxGroup<Servicio> checkboxGroup = new CheckboxGroup<>();
+            checkboxGroup.setLabel(servicioType.getName());
+            List<Servicio> serviciosByType = servicioService.findServiciosByServicioType(servicioType);
+            checkboxGroup.setItems(serviciosByType);
+            checkboxGroups.put(servicioType, checkboxGroup);
+            checkboxGroup.addValueChangeListener(event -> updateSummary());
+            add(checkboxGroup);
+        }
+
+        H3 serviciosSelecionado = new H3("Resumen de Servicios: ");
+        serviciosSummary.add(new H4("Sin servicios seleccionados"));
+        add(serviciosSelecionado);
         add(serviciosSummary);
+
+        this.saveButton = new Button("Guardar",e->save(contrato));
+        this.cancelButton = new Button("Cancelar", e -> cancel());
+
+        HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, cancelButton);
+        add(buttonLayout);
+
     }
 
     private void updateSummary() {
@@ -109,35 +131,20 @@ public class ContratoEditor extends VerticalLayout implements KeyNotifier {
     public void editContrato(Contrato contrato) {
         this.contrato = contrato;
         binder.setBean(contrato);
-        selectedServices = new HashSet<>(contrato.getServicios());
-        for (ServicioType servicioType : servicioService.findAllTypes()) {
-            CheckboxGroup<Servicio> checkboxGroup = new CheckboxGroup<>();
-            checkboxGroup.setLabel(servicioType.getName());
-            List<Servicio> serviciosByType = servicioService.findServiciosByServicioType(servicioType);
-            checkboxGroup.setItems(serviciosByType);
-            checkboxGroups.put(servicioType, checkboxGroup);
-            checkboxGroup.deselectAll();
-            for (Servicio servicio : serviciosByType) {
-                for(Servicio servicioSel : selectedServices) {
-                    if (servicioSel.equals(servicio)) {
-                        checkboxGroup.select(servicio);
-                    }
+
+        for(Map.Entry<ServicioType, CheckboxGroup<Servicio>> entry : checkboxGroups.entrySet()){
+            ServicioType servicioType = entry.getKey();
+            CheckboxGroup<Servicio> checkboxGroup = entry.getValue();
+
+            for(Servicio servicio : contrato.getServicios()){
+                if(servicio.getServicioType().equals(servicioType)){
+                    checkboxGroup.select(servicio);
                 }
             }
-            binder.bindInstanceFields(this);
-            checkboxGroup.addValueChangeListener(event -> updateSummary());
-            add(checkboxGroup);
+
         }
-        H3 serviciosSelecionado = new H3("Resumen de Servicios: ");
-        serviciosSummary.add(new H4("Sin servicios seleccionados"));
-        add(serviciosSelecionado);
-        add(serviciosSummary);
 
-        this.saveButton = new Button("Guardar",e->save(contrato));
-        this.cancelButton = new Button("Cancelar", e -> cancel());
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, cancelButton);
-        add(buttonLayout);
 
     }
     public void setCallback(Runnable callback) {
