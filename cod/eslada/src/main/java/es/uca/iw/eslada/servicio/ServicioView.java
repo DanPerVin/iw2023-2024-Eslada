@@ -1,25 +1,19 @@
 package es.uca.iw.eslada.servicio;
 
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.accordion.AccordionPanel;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.charts.model.Label;
-import com.vaadin.flow.component.details.Details;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.router.Route;
 import es.uca.iw.eslada.main.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 
 
 
@@ -54,7 +48,7 @@ public class ServicioView extends VerticalLayout {
 
         grid.addColumn(Servicio::getName).setHeader("Nombre").setSortable(true);;
         grid.addColumn(Servicio::getPrice).setHeader("Precio").setSortable(true);;
-        grid.addColumn(servicio -> servicio.getServicioType().getName()).setHeader("Tipo").setSortable(true);;
+        grid.addColumn(servicio -> servicio.getServicioType().getName()).setHeader("Tipo").setSortable(true);
 
         grid.addColumn(new ComponentRenderer<>(HorizontalLayout::new, (layout, servicio) -> {
             Button editButton = new Button("Edit", e -> this.editServicio(servicio));

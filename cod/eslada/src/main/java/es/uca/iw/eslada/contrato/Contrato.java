@@ -52,6 +52,7 @@ public class Contrato {
     @JoinColumn(name = "user_id")
     private User user;
 
+
     public UUID getId() { return id; }
 
     public String getNombre() {

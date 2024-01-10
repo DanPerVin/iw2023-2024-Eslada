@@ -15,6 +15,8 @@ import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import es.uca.iw.eslada.contrato.ContratoEditView;
 import es.uca.iw.eslada.contrato.ContratoListView;
+import es.uca.iw.eslada.factura.FacturaAdminView;
+import es.uca.iw.eslada.factura.FacturaUserView;
 import es.uca.iw.eslada.servicio.ServicioTypeView;
 import es.uca.iw.eslada.servicio.ServicioView;
 
@@ -81,6 +83,14 @@ public class MainLayout extends AppLayout {
             nav.addItem(new SideNavItem("Contrato Edit List", ContratoEditView.class, VaadinIcon.CASH.create()));
         }
 
+        if (accessChecker.hasAccess(FacturaUserView.class)) {
+            nav.addItem(new SideNavItem("Factura List", FacturaUserView.class, VaadinIcon.BOOK_DOLLAR.create()));
+        }
+
+        if (accessChecker.hasAccess(FacturaAdminView.class)) {
+            nav.addItem(new SideNavItem("Factura List", FacturaAdminView.class, VaadinIcon.BOOK_DOLLAR.create()));
+        }
+
         return nav;
-    }//TODO: Revisar permisos de tarifas
+    }
 }

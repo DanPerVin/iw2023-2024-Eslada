@@ -1,6 +1,5 @@
 package es.uca.iw.eslada.user;
 
-import es.uca.iw.eslada.contrato.Contrato;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -8,8 +7,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -59,7 +56,6 @@ public class User { //TODO: change fields properties (to fit form)
     private Collection<Rol> roles;
 
 
-
 //    @Enumerated(EnumType.STRING)
 //    private UserRole userRole = UserRole.USER; //user by default
 
@@ -90,8 +86,6 @@ public class User { //TODO: change fields properties (to fit form)
     public String getUsername() {
         return username;
     }
-
-
 
     public void setUsername(String username) {
         this.username = username;

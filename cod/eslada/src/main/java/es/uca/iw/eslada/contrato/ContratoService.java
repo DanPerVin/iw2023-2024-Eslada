@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.UUID;
+
 
 @Service
 public class ContratoService {
@@ -21,6 +23,8 @@ public class ContratoService {
     public List<Contrato> findAll() {
         return contratoRepository.findAll();
     }
+
+    public List<Contrato> findContratosByUserId(UUID id) {return contratoRepository.findContratosByUserId(id); }
 
 
     public void delete(Contrato contrato) {
