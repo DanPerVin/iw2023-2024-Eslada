@@ -26,11 +26,7 @@ public class Linea {
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean block; //Bloqueo de numeros especiales
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "linea_shared_data",
-            joinColumns = {@JoinColumn(name = "linea_id")},
-            inverseJoinColumns = {@JoinColumn(name = "shared_linea_id")})
-    private Set<Linea> sharedDataLines = new HashSet<>(); //Entidad para ver lineas que comparten datos.
+    //TODO:COMPARTIMIENTO DE LINEAS.
 
     public UUID getId() {
         return id;
@@ -72,13 +68,13 @@ public class Linea {
         this.block = block;
     }
 
-    public Set<Linea> getSharedDataLines() {
-        return sharedDataLines;
-    }
-
-    public void setSharedDataLines(Set<Linea> sharedDataLines) {
-        this.sharedDataLines = sharedDataLines;
-    }
+//    public Set<Linea> getSharedDataLines() {
+//        return sharedDataLines;
+//    }
+//
+//    public void setSharedDataLines(Set<Linea> sharedDataLines) {
+//        this.sharedDataLines = sharedDataLines;
+//    }
 
 
 }

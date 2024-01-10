@@ -23,6 +23,8 @@ public class LineaService {
         Linea linea = new Linea();
         linea.setLine(line.getId());
         linea.setUser(user);
+        linea.setBlock(false);
+        linea.setRoaming(false);
         this.lineaRepository.save(linea);
     }
     @Transactional
@@ -34,6 +36,10 @@ public class LineaService {
 
     public List<Linea> findAll(){
         return this.lineaRepository.findAll();
+    }
+
+    public List<Linea> findAllByUser(User user){
+        return this.lineaRepository.findAllByUser(user);
     }
 
     public  Linea findByLine(String line){

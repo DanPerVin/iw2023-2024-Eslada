@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Route(value = "api", layout = MainLayout.class)
-@AnonymousAllowed
+@RolesAllowed("ROLE_ADMIN")
 public class ApiView extends VerticalLayout {
     //TODO: BORRAR PAGINA DE PRUEBAS DE API
 
