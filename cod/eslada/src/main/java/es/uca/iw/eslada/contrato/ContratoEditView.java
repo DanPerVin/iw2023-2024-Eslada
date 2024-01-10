@@ -183,5 +183,5 @@ public class ContratoEditView extends VerticalLayout {
         dialog.open();
     }
 
-}//TODO: Que se vea la imagen y enlace a la ventana de la contrato
+}
 

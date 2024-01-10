@@ -13,6 +13,8 @@ import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import es.uca.iw.eslada.api.ApiView;
+import es.uca.iw.eslada.api.UserApiView;
 import es.uca.iw.eslada.consultas.ConsultationView;
 import es.uca.iw.eslada.servicio.ServicioView;
 import es.uca.iw.eslada.contrato.ContratoEditView;
@@ -81,6 +83,12 @@ public class MainLayout extends AppLayout {
 
         if (accessChecker.hasAccess(ContratoEditView.class)) {
             nav.addItem(new SideNavItem("Contrato Edit List", ContratoEditView.class, VaadinIcon.CASH.create()));
+        }
+        if (accessChecker.hasAccess(ApiView.class)) {
+            nav.addItem(new SideNavItem("Lineas telefonicas", ApiView.class, VaadinIcon.PHONE.create()));
+        }
+        if (accessChecker.hasAccess(UserApiView.class)) {
+            nav.addItem(new SideNavItem("Lineas telefonicas", UserApiView.class, VaadinIcon.PHONE.create()));
         }
 
         if(accessChecker.hasAccess(ServicioView.class)){
