@@ -30,6 +30,7 @@ public class RegisterView extends VerticalLayout {
     private final UserService userService;
     private final TextField username = new TextField();
     private final TextField name = new TextField();
+    private final TextField surname = new TextField();
     private final TextField dni = new TextField();
     private final EmailField email = new EmailField();
     private final PasswordField password= new PasswordField();
@@ -44,6 +45,7 @@ public class RegisterView extends VerticalLayout {
 
         username.setId("username");
         name.setId("name");
+        surname.setId("surname");
         email.setId("email");
         dni.setId("dni");
         password.setId("password");
@@ -64,6 +66,7 @@ public class RegisterView extends VerticalLayout {
 
         username.setLabel("Username");
         name.setLabel("Name");
+        surname.setLabel("Surname");
         dni.setLabel("DNI");
         email.setLabel("e-mail");
         password.setLabel("Password");
@@ -75,7 +78,7 @@ public class RegisterView extends VerticalLayout {
         List<Rol> availableRoles = userService.findAllRoles();
         rolComboBox.setItems(availableRoles);
 
-        add(username,name,dni,email,password,password2,rolComboBox,register);
+        add(username,name,surname,dni,email,password,password2,rolComboBox,register);
 
         register.addClickListener(e -> onRegisterButtonClick());
 

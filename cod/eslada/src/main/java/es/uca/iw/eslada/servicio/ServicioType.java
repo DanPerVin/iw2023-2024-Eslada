@@ -28,4 +28,16 @@ public class ServicioType {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ServicioType other)) {
+            return false;
+        }
+
+        if (id != null) {
+            return id.equals(other.id);
+        }
+        return super.equals(other);
+    }
 }

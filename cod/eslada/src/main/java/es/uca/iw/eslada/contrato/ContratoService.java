@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ContratoService {
@@ -36,4 +37,34 @@ public class ContratoService {
             return false;
         }
     }
+
+    public boolean edit(Contrato contrato, Collection<Servicio> servicios){
+        try{
+            contrato.setServicios(servicios);
+            contratoRepository.save(contrato);
+            return true;
+        }catch (DataIntegrityViolationException e){
+            return false;
+        }
+    }
+
+    public String getServiciosNames(Contrato contrato) {
+        return contrato.getServicios().stream()
+                .map(Servicio::getName)
+                .collect(Collectors.joining(", "));
+    }
+
+    public double getServiciosPrecio(Contrato contrato){
+        double precioTotal = 0;
+        Collection<Servicio> servicios = contrato.getServicios();
+        for (Servicio servicio : servicios) {
+            precioTotal += servicio.getPrice();
+        }
+        return precioTotal;
+    }
+
+    public List<Contrato> findAllByUser(User user){
+        return contratoRepository.findAllByUserIs(user);
+    }
+
 }

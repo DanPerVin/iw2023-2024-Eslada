@@ -1,7 +1,7 @@
 package es.uca.iw.eslada.servicio;
 
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import es.uca.iw.eslada.contrato.Contrato;
+import es.uca.iw.eslada.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -78,6 +78,18 @@ public class Servicio{
 
     public void setContratos(Collection<Contrato> contratos) {
         this.contratos = contratos;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Servicio other)) {
+            return false;
+        }
+
+        if (id != null) {
+            return id.equals(other.id);
+        }
+        return super.equals(other);
     }
 
     @Override
