@@ -16,7 +16,7 @@ import es.uca.iw.eslada.main.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
 @Route(value = "serviciostype", layout = MainLayout.class)
-@RolesAllowed("ROLE_ADMIN")
+@RolesAllowed({"ROLE_ADMIN","ROLE_MARKETING"})
 public class ServicioTypeView extends VerticalLayout {
     private final ServicioService servicioService;
     private final ServicioTypeAdder servicioTypeAdder;
