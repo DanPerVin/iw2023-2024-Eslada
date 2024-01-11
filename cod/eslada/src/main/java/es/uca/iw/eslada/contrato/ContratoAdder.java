@@ -2,8 +2,7 @@ package es.uca.iw.eslada.contrato;
 
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.charts.model.Label;
-import com.vaadin.flow.component.combobox.ComboBox;
+
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -16,6 +15,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import es.uca.iw.eslada.factura.Factura;
+import es.uca.iw.eslada.factura.FacturaService;
 import es.uca.iw.eslada.servicio.Servicio;
 import es.uca.iw.eslada.servicio.ServicioService;
 import es.uca.iw.eslada.servicio.ServicioType;
@@ -32,6 +33,7 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
     private final ContratoService contratoService;
 
     private final ServicioService servicioService;
+    private final FacturaService facturaService;
     private final AuthenticatedUser authenticatedUser;
 
     private TextField nombre;
@@ -43,6 +45,8 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
     private Button addButton;
     private Button cancelButton;
     private BeanValidationBinder<Contrato> binder;
+    private BeanValidationBinder<Factura> binderF;
+
 
     private Optional<User> user = Optional.of(new User());
 
@@ -52,10 +56,11 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
 
     private Runnable callback;
 
-    public ContratoAdder(ContratoService contratoService,ServicioService servicioService, AuthenticatedUser authenticatedUser){
+    public ContratoAdder(ContratoService contratoService,ServicioService servicioService, AuthenticatedUser authenticatedUser, FacturaService facturaService){
         this.contratoService = contratoService;
         this.servicioService = servicioService;
         this.authenticatedUser = authenticatedUser;
+        this.facturaService = facturaService;
 
 //        Optional<User> user = Optional.of(new User());
 
@@ -83,6 +88,7 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
         this.addButton = new Button("Añadir", e -> add());
         this.cancelButton = new Button("Cancelar", e -> cancel());
         this.binder = new BeanValidationBinder<>(Contrato.class);
+        this.binderF = new BeanValidationBinder<>(Factura.class);
         binder.bindInstanceFields(this);
         HorizontalLayout buttonLayout = new HorizontalLayout(addButton, cancelButton);
 
@@ -172,6 +178,8 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
         Contrato contrato = new Contrato();
         binder.writeBeanIfValid(contrato);
         Collection<Servicio> selectedServicios = new ArrayList<>();
+        Factura factura = new Factura();
+        binderF.writeBeanIfValid(factura);
 
         for(Map.Entry<ServicioType, MultiSelectComboBox<Servicio>> entry : comboboxes.entrySet()){
             Collection<Servicio> selectedServiciosinType = new ArrayList<>(entry.getValue().getSelectedItems());
@@ -183,7 +191,9 @@ public class ContratoAdder extends VerticalLayout implements KeyNotifier {
         if (contrato.getNombre() != null && !selectedServicios.isEmpty() && user.isPresent()) {
             contrato.setFecha(LocalDateTime.now());
             contratoService.save(contrato,user.get(),selectedServicios);
+            facturaService.save(factura, contrato, user.get());
             binder.setBean(null);
+            binderF.setBean(null);
             getParent().ifPresent(parent -> {
                 if(parent instanceof Dialog){
                     ((Dialog)parent).close();

@@ -10,4 +10,6 @@ public interface ContratoRepository extends JpaRepository<Contrato, UUID> {
 
    List<Contrato> findAllByUserIs(User user);
 
+    List<Contrato> findContratosByUserId(UUID id);
+
 }

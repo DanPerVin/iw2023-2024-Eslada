@@ -20,6 +20,8 @@ import es.uca.iw.eslada.register.RegisterView;
 import es.uca.iw.eslada.servicio.ServicioView;
 import es.uca.iw.eslada.contrato.ContratoEditView;
 import es.uca.iw.eslada.contrato.ContratoListView;
+import es.uca.iw.eslada.factura.FacturaAdminView;
+import es.uca.iw.eslada.factura.FacturaUserView;
 import es.uca.iw.eslada.servicio.ServicioTypeView;
 import es.uca.iw.eslada.servicio.ServicioView;
 
@@ -99,6 +101,14 @@ public class MainLayout extends AppLayout {
 
         if(accessChecker.hasAccess(RegisterView.class)){
             nav.addItem(new SideNavItem("Registrar Usuario", RegisterView.class,VaadinIcon.USER.create()));
+        }
+
+        if (accessChecker.hasAccess(FacturaUserView.class)) {
+            nav.addItem(new SideNavItem("Factura List", FacturaUserView.class, VaadinIcon.BOOK_DOLLAR.create()));
+        }
+
+        if (accessChecker.hasAccess(FacturaAdminView.class)) {
+            nav.addItem(new SideNavItem("Factura List", FacturaAdminView.class, VaadinIcon.BOOK_DOLLAR.create()));
         }
 
         return nav;
