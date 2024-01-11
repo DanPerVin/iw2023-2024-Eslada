@@ -30,7 +30,7 @@ import java.util.*;
 
 
 @Route(value = "message", layout = MainLayout.class)
-@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+@RolesAllowed({"ROLE_ADMIN", "ROLE_USER", "ROLE_ATENCION"})
 public class MessageView extends VerticalLayout implements HasUrlParameter<String> {
 
     Optional<Consultation> consultation;

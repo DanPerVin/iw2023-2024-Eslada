@@ -25,7 +25,7 @@ import java.util.UUID;
 
 
 @Route(value = "consultation", layout = MainLayout.class)
-@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+@RolesAllowed({"ROLE_ADMIN", "ROLE_USER", "ROLE_ATENCION"})
 public class ConsultationView extends VerticalLayout {
 
     private ConsultationService consultationService;
