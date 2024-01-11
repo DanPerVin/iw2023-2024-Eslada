@@ -3,6 +3,8 @@ package es.uca.iw.eslada.contrato;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H3;
@@ -11,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import es.uca.iw.eslada.servicio.Servicio;
@@ -24,8 +27,6 @@ import java.util.*;
 @SpringComponent
 @UIScope
 public class ContratoEditor extends VerticalLayout implements KeyNotifier {
-    private CheckboxGroup<Servicio> serviciosCheckboxGroup = new CheckboxGroup<>();
-    private final ContratoRepository contratoRepository;
     private TextField nombre;
     private TextField apellidos;
     private TextField email;
@@ -40,17 +41,17 @@ public class ContratoEditor extends VerticalLayout implements KeyNotifier {
     private final ServicioService servicioService;
     private final ContratoService contratoService;
 
-    private Map<ServicioType, CheckboxGroup<Servicio>> checkboxGroups = new HashMap<>();
+    private Map<ServicioType, MultiSelectComboBox<Servicio>> comboboxes = new HashMap<>();
+
     private VerticalLayout serviciosSummary = new VerticalLayout();
-    private Set<Servicio> selectedServices;
-    private Optional<User> user = Optional.of(new User());
+    private Set<Servicio> selectedServices= new HashSet<>();;
 
 
-    public ContratoEditor(ContratoRepository contratoRepository, ServicioService servicioService, ContratoService contratoService){
-        this.contratoRepository = contratoRepository;
+
+    public ContratoEditor(ServicioService servicioService, ContratoService contratoService){
         this.servicioService = servicioService;
         this.contratoService = contratoService;
-
+        
         this.nombre = new TextField("Nombre");
         this.apellidos = new TextField("Apellidos");
         this.dni = new TextField("dni");
@@ -58,11 +59,32 @@ public class ContratoEditor extends VerticalLayout implements KeyNotifier {
         this.direccion = new TextField("Direccion");
         this.iban = new TextField("Cuenta Bancaria");
         add(nombre,apellidos, dni, email, direccion, iban);
-        this.selectedServices = new HashSet<>();
+
 
         this.binder = new BeanValidationBinder<>(Contrato.class);
         binder.bindInstanceFields(this);
+
+        for (ServicioType servicioType : servicioService.findAllTypes()) {
+            MultiSelectComboBox<Servicio> comboBox = new MultiSelectComboBox<>();
+            comboBox.setLabel(servicioType.getName());
+            List<Servicio> serviciosByType = servicioService.findServiciosByServicioType(servicioType);
+            comboBox.setItems(serviciosByType);
+            comboboxes.put(servicioType, comboBox);
+            comboBox.addValueChangeListener(event -> updateSummary());
+            add(comboBox);
+        }
+
+        H3 header = new H3("Resumen de Servicios: ");
+        add(header);
+        serviciosSummary.add(new H4("Sin servicios seleccionados"));
         add(serviciosSummary);
+
+        this.saveButton = new Button("Guardar",e->save(contrato));
+        this.cancelButton = new Button("Cancelar", e -> cancel());
+
+        HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, cancelButton);
+        add(buttonLayout);
+
     }
 
     private void updateSummary() {
@@ -70,10 +92,10 @@ public class ContratoEditor extends VerticalLayout implements KeyNotifier {
         serviciosSummary.removeAll();
 
         double totalPrice = 0;
-        for (Map.Entry<ServicioType, CheckboxGroup<Servicio>> entry : checkboxGroups.entrySet()) {
+        for (Map.Entry<ServicioType, MultiSelectComboBox<Servicio>> entry : comboboxes.entrySet()) {
             ServicioType servicioType = entry.getKey();
-            CheckboxGroup<Servicio> checkboxGroup = entry.getValue();
-            Set<Servicio> selectedServices = checkboxGroup.getSelectedItems();
+            MultiSelectComboBox<Servicio> comboBox = entry.getValue();
+            Set<Servicio> selectedServices = comboBox.getSelectedItems();
 
             if (!selectedServices.isEmpty()) {
                 Grid<Servicio> servicioGrid = new Grid<>();
@@ -95,10 +117,13 @@ public class ContratoEditor extends VerticalLayout implements KeyNotifier {
         serviciosSummary.add(totalPriceText);
     }
 
-
+    public void clear(){
+        serviciosSummary.removeAll();
+    }
 
     private void cancel() {
         binder.setBean(null);
+        clear();
         getParent().ifPresent(parent -> {
             if(parent instanceof Dialog){
                 ((Dialog)parent).close();
@@ -110,34 +135,23 @@ public class ContratoEditor extends VerticalLayout implements KeyNotifier {
         this.contrato = contrato;
         binder.setBean(contrato);
         selectedServices = new HashSet<>(contrato.getServicios());
-        for (ServicioType servicioType : servicioService.findAllTypes()) {
-            CheckboxGroup<Servicio> checkboxGroup = new CheckboxGroup<>();
-            checkboxGroup.setLabel(servicioType.getName());
-            List<Servicio> serviciosByType = servicioService.findServiciosByServicioType(servicioType);
-            checkboxGroup.setItems(serviciosByType);
-            checkboxGroups.put(servicioType, checkboxGroup);
-            checkboxGroup.deselectAll();
-            for (Servicio servicio : serviciosByType) {
-                for(Servicio servicioSel : selectedServices) {
-                    if (servicioSel.equals(servicio)) {
-                        checkboxGroup.select(servicio);
-                    }
+
+        for(Map.Entry<ServicioType, MultiSelectComboBox<Servicio>> entry : comboboxes.entrySet()){
+            ServicioType servicioType = entry.getKey();
+            MultiSelectComboBox<Servicio> comboBox = entry.getValue();
+            comboBox.deselectAll();
+            for(Servicio servicio: selectedServices){
+                if(servicio.getServicioType().equals(servicioType)){
+                    comboBox.select(servicio);
+
                 }
             }
-            binder.bindInstanceFields(this);
-            checkboxGroup.addValueChangeListener(event -> updateSummary());
-            add(checkboxGroup);
+
+
         }
-        H3 serviciosSelecionado = new H3("Resumen de Servicios: ");
-        serviciosSummary.add(new H4("Sin servicios seleccionados"));
-        add(serviciosSelecionado);
-        add(serviciosSummary);
 
-        this.saveButton = new Button("Guardar",e->save(contrato));
-        this.cancelButton = new Button("Cancelar", e -> cancel());
+        updateSummary();
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, cancelButton);
-        add(buttonLayout);
 
     }
     public void setCallback(Runnable callback) {
@@ -147,7 +161,7 @@ public class ContratoEditor extends VerticalLayout implements KeyNotifier {
     private void save(Contrato contrato){
         Collection<Servicio> selectedServicios = new ArrayList<>();
         if(binder.validate().isOk()){
-            for(Map.Entry<ServicioType, CheckboxGroup<Servicio>> entry : checkboxGroups.entrySet()){
+            for(Map.Entry<ServicioType, MultiSelectComboBox<Servicio>> entry : comboboxes.entrySet()){
                 Collection<Servicio> selectedServiciosinType = new ArrayList<>(entry.getValue().getSelectedItems());
                 if(!selectedServiciosinType.isEmpty()){
                     selectedServicios.addAll(selectedServiciosinType);

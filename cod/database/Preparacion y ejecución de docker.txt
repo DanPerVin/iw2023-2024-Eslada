@@ -1,0 +1,9 @@
+Para ejecutar la aplicación de ESLADA en docker debe realizarse los siguientes pasos:
+1. Modificar application.properties para que pueda conectarse con mariadb (usar el ubicado en /cod/database)
+2. Ejecutar mvn package -Pproduction creando asi en la carpeta target el .jar de la aplicación
+3. Ejecutar en la carpeta /cod tanto docker compose build como docker compose up (se puede ejecutar solo el segundo directamente)
+
+La carpeta /cod/database contiene un sql para el inicio de la BBDD, este SQL deberá ser editado con un SQL que cree tanto la BBDD, como las tablas e inserte la
+información para el correcto uso de la app, pero en principio sin ello la aplicación se ejecuta pero no hay datos en la misma (La BD obtiene la forma debido a Spring
+Data). 
+
