@@ -28,7 +28,7 @@ import java.util.Collection;
 
 
 @Route(value = "factura_ADMIN", layout = MainLayout.class)
-@RolesAllowed("ROLE_ADMIN")
+@RolesAllowed({"ROLE_ADMIN","ROLE_FACTURAS"})
 
 public class FacturaAdminView extends VerticalLayout {
 
