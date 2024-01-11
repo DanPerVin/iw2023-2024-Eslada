@@ -83,7 +83,8 @@ public class MessageView extends VerticalLayout implements HasUrlParameter<Strin
 
         C1.add(consultationData);
 
-        if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN")){
+        if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN")
+            || authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ATENCION")){
             Button closeConsultation = new Button("Cerrar", e -> closeConsultation(consultation.get()));
             C1.add(closeConsultation);
         }

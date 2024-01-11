@@ -89,7 +89,8 @@ public class ConsultationView extends VerticalLayout {
         //Si eres usuario puedes crear consultas
         if (authenticatedUser.get().get().getRoles().iterator().next().getName().matches("USER"))
             C1.add(addNewConsultation);
-        if (authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN"))
+        if (authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN")
+                || authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ATENCION"))
             C1.add(checkbox);
 
 
@@ -101,7 +102,8 @@ public class ConsultationView extends VerticalLayout {
         grid.addColumn(consultation -> consultation.getUser().getUsername()).setHeader("Usuario");
         grid.addColumn(Consultation::getCreationDate).setHeader("Fecha de creación").setSortable(true);
         grid.addColumn(Consultation::getClosed).setHeader("Cerrado").setSortable(true);
-        if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN")) {
+        if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN")
+                || authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ATENCION")) {
             grid.addColumn(new ComponentRenderer<>(HorizontalLayout::new, (layout, consultation) -> {
                 Button closeConsultation = new Button("Cerrar", e -> this.closeConsultation(consultation));
 
@@ -116,7 +118,8 @@ public class ConsultationView extends VerticalLayout {
         grid.addItemDoubleClickListener(consultation -> UI.getCurrent().navigate("message/" + consultation.getItem().getId()));
 
         //Si eres admin ves las consultas abiertas, si eres user ves todas tus consultas
-        if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN"))
+        if(authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ADMIN")
+                || authenticatedUser.get().get().getRoles().iterator().next().getName().matches("ATENCION"))
             if(checkbox.getValue())
                 grid.setItems(consultationService.findAll());
             else
