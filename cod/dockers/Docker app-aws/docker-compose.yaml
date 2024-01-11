@@ -1,0 +1,8 @@
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eslada_webapp
+    ports:
+      - 80:5000
