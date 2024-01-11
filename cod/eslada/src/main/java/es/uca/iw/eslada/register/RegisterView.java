@@ -65,12 +65,12 @@ public class RegisterView extends VerticalLayout {
         password2.setHelperText("Passwords must coincide");
 
         username.setLabel("Username");
-        name.setLabel("Name");
-        surname.setLabel("Surname");
+        name.setLabel("Nombre");
+        surname.setLabel("Apellidos");
         dni.setLabel("DNI");
         email.setLabel("e-mail");
-        password.setLabel("Password");
-        password2.setLabel("Repeat Password");
+        password.setLabel("Contraseña");
+        password2.setLabel("Repite tu contraseña");
 
         rolComboBox.setItemLabelGenerator(Rol::getName);
         rolComboBox.setClearButtonVisible(true);
@@ -96,10 +96,10 @@ public class RegisterView extends VerticalLayout {
                 binder.setBean(new User());
                 password2.setValue("");
             }else{
-                Notification.show("Something went wrong");
+                Notification.show("Algo fue mal");
             }
         }else{
-            Notification.show("Please, revise input data");
+            Notification.show("Por favor, revisa los datos introducidos");
         }
     }
 }

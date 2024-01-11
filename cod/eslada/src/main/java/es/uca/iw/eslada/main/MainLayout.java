@@ -66,26 +66,26 @@ public class MainLayout extends AppLayout {
         SideNav nav = new SideNav();
 
         if (accessChecker.hasAccess(UserHomeView.class)) {
-            nav.addItem(new SideNavItem("Home", UserHomeView.class, VaadinIcon.HOME.create()));
+            nav.addItem(new SideNavItem("Casa", UserHomeView.class, VaadinIcon.HOME.create()));
         }
 
         if (accessChecker.hasAccess(EmployeeHomeView.class)) {
-            nav.addItem(new SideNavItem("Home", EmployeeHomeView.class, VaadinIcon.HOME.create()));
+            nav.addItem(new SideNavItem("Casa", EmployeeHomeView.class, VaadinIcon.HOME.create()));
         }
 
         if(accessChecker.hasAccess(ServicioView.class)){
-            nav.addItem(new SideNavItem("Servicios List", ServicioView.class,VaadinIcon.ANCHOR.create()));
+            nav.addItem(new SideNavItem("Lista de Servicios", ServicioView.class,VaadinIcon.SUITCASE.create()));
         }
         if(accessChecker.hasAccess(ServicioTypeView.class)){
-            nav.addItem(new SideNavItem("Servicio Types List", ServicioTypeView.class,VaadinIcon.ANCHOR.create()));
+            nav.addItem(new SideNavItem("Tipos de Servicio", ServicioTypeView.class,VaadinIcon.CHART.create()));
         }
 
         if (accessChecker.hasAccess(ContratoListView.class)) {
-            nav.addItem(new SideNavItem("Contrato List", ContratoListView.class, VaadinIcon.CASH.create()));
+            nav.addItem(new SideNavItem("Mis Contratos", ContratoListView.class, VaadinIcon.CASH.create()));
         }
 
         if (accessChecker.hasAccess(ContratoEditView.class)) {
-            nav.addItem(new SideNavItem("Contrato Edit List", ContratoEditView.class, VaadinIcon.CASH.create()));
+            nav.addItem(new SideNavItem("Lista de Contratos", ContratoEditView.class, VaadinIcon.CASH.create()));
         }
         if (accessChecker.hasAccess(ApiView.class)) {
             nav.addItem(new SideNavItem("Lineas telefonicas", ApiView.class, VaadinIcon.PHONE.create()));
@@ -96,7 +96,7 @@ public class MainLayout extends AppLayout {
 
 
         if(accessChecker.hasAccess(ConsultationView.class)){
-            nav.addItem(new SideNavItem("Consultas", ConsultationView.class,VaadinIcon.AIRPLANE.create()));
+            nav.addItem(new SideNavItem("Consultas", ConsultationView.class,VaadinIcon.CHAT.create()));
         }
 
         if(accessChecker.hasAccess(RegisterView.class)){
@@ -104,11 +104,11 @@ public class MainLayout extends AppLayout {
         }
 
         if (accessChecker.hasAccess(FacturaUserView.class)) {
-            nav.addItem(new SideNavItem("Factura List", FacturaUserView.class, VaadinIcon.BOOK_DOLLAR.create()));
+            nav.addItem(new SideNavItem("Mis Facturas", FacturaUserView.class, VaadinIcon.BOOK_DOLLAR.create()));
         }
 
         if (accessChecker.hasAccess(FacturaAdminView.class)) {
-            nav.addItem(new SideNavItem("Factura List", FacturaAdminView.class, VaadinIcon.BOOK_DOLLAR.create()));
+            nav.addItem(new SideNavItem("Lista de Facturas", FacturaAdminView.class, VaadinIcon.BOOK_DOLLAR.create()));
         }
 
         return nav;

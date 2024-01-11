@@ -31,7 +31,7 @@ public class ServicioTypeView extends VerticalLayout {
         headerLayout.setWidthFull();
         headerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
-        H1 title = new H1("ServicioTypes");
+        H1 title = new H1("Tipos de Servicios");
         Button addButton = new Button("Add", e -> addServicioType());
 
         headerLayout.add(title, addButton);
