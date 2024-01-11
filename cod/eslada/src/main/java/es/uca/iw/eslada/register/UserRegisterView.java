@@ -1,7 +1,10 @@
 package es.uca.iw.eslada.register;
 
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -23,62 +26,53 @@ import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
-@Route(value = "adminRegister", layout = MainLayout.class)
-@PageTitle("ESLADA-REGISTER")
-@RolesAllowed("ROLE_ADMIN")
-public class RegisterView extends VerticalLayout {
+@Route(value = "register")
+@AnonymousAllowed
+public class UserRegisterView extends VerticalLayout {
     private final UserService userService;
     private final TextField username = new TextField();
     private final TextField name = new TextField();
-    private final TextField surname = new TextField();
     private final TextField dni = new TextField();
     private final EmailField email = new EmailField();
     private final PasswordField password= new PasswordField();
     private final PasswordField password2 = new PasswordField();
-    private final ComboBox<Rol> rolComboBox = new ComboBox<>("Rol");
-    private final Button register = new Button("Register");
+    private final Button register = new Button("Registrarse");
     private final BeanValidationBinder<User> binder;
-    public RegisterView(UserService userService){
+    public UserRegisterView(UserService userService){
         this.userService = userService;
 
-        add(new H2("Registrar nuevo usuario"));
+        add(new H1("Regístrate como usuario"));
+        add(new H2("Introduce tus datos para empezar a formar parte de Eslada:"));
 
         username.setId("username");
         name.setId("name");
-        surname.setId("surname");
         email.setId("email");
         dni.setId("dni");
         password.setId("password");
-        rolComboBox.setId("roles");
 
         dni.setPattern("^[0-9]{8}[A-Za-z]$");
         dni.setMaxLength(9);
         dni.setMinLength(9);
-        dni.setHelperText("Format: 58723465C");
+        dni.setHelperText("Formato: 58723465C");
 
         password.setMinLength(6);
         password.setMaxLength(26);
-        password.setHelperText("6-26 characters and numbers");
+        password.setHelperText("6-26 letras y numeros");
 
         password2.setMinLength(6);
         password2.setMaxLength(26);
-        password2.setHelperText("Passwords must coincide");
+        password2.setHelperText("Las contraseñas deben coincidir");
 
         username.setLabel("Username");
-        name.setLabel("Name");
-        surname.setLabel("Surname");
+        name.setLabel("Nombre");
         dni.setLabel("DNI");
         email.setLabel("e-mail");
-        password.setLabel("Password");
-        password2.setLabel("Repeat Password");
+        password.setLabel("Contraseña");
+        password2.setLabel("Repite tu contraseña");
 
-        rolComboBox.setItemLabelGenerator(Rol::getName);
-        rolComboBox.setClearButtonVisible(true);
-        rolComboBox.setPlaceholder("Select a rol");
-        List<Rol> availableRoles = userService.findAllRoles();
-        rolComboBox.setItems(availableRoles);
 
-        add(username,name,surname,dni,email,password,password2,rolComboBox,register);
+
+        add(username,name,dni,email,password,password2,register);
 
         register.addClickListener(e -> onRegisterButtonClick());
 
@@ -86,20 +80,22 @@ public class RegisterView extends VerticalLayout {
         binder.bindInstanceFields(this);
 
         binder.setBean(new User());
+
+        this.setAlignItems(Alignment.CENTER);
     }
 
     private void onRegisterButtonClick() {
         if(binder.validate().isOk() & password.getValue().equals(password2.getValue())){
-            Rol selectedRol = rolComboBox.getValue();
+            Rol selectedRol = userService.findRolByName("USER");
             if(selectedRol != null && userService.registerUser(binder.getBean(),selectedRol)){
-                Notification.show("User Created");
+                Notification.show("Registro Realizado !");
                 binder.setBean(new User());
                 password2.setValue("");
             }else{
-                Notification.show("Something went wrong");
+                Notification.show("Algo fue mal");
             }
         }else{
-            Notification.show("Please, revise input data");
+            Notification.show("Por favor, revisa los datos introducidos");
         }
     }
 }
